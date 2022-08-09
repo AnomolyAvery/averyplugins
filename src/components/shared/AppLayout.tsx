@@ -15,7 +15,7 @@ const AppLayout: React.FC<Props> = ({
     return (
         <>
             <AppNav />
-            <main className='mx-auto container max-w-7xl py-6'>
+            <main className='mx-auto container max-w-7xl py-6 px-4 sm:px-6 lg:px-8'>
                 {children}
             </main>
         </>
