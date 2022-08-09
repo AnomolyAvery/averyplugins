@@ -15,7 +15,7 @@ const AppLayout: React.FC<Props> = ({
     return (
         <>
             <AppNav />
-            <main>
+            <main className='mx-auto container max-w-7xl py-6'>
                 {children}
             </main>
         </>
@@ -51,7 +51,7 @@ const AppNav: React.FC = () => {
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="flex justify-between h-16">
                             <div className="flex">
-                                <div className="flex-shrink-0 flex items-center">
+                                <NextLink href="/" className="flex-shrink-0 flex items-center">
                                     <img
                                         className="block lg:hidden h-8 w-auto"
                                         src={'https://azuriom.com/assets/svg/logo-white.svg'}
@@ -62,7 +62,7 @@ const AppNav: React.FC = () => {
                                         src={'https://azuriom.com/assets/svg/logo-white.svg'}
                                         alt="Workflow"
                                     />
-                                </div>
+                                </NextLink>
                                 <div className="hidden sm:ml-6 sm:flex sm:space-x-4">
                                     <NextLink href='/products' className="text-neutral-300 hover:text-neutral-100 inline-flex items-center px-1 pt-1 text-sm font-medium"
                                     >

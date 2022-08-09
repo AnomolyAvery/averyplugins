@@ -1,7 +1,29 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 
 const Home: NextPage = () => {
+
+
+  const serverTypes = ['Unturned', 'Rust', 'GMod', 'Minecraft'];
+
+  const [serverType, updateServerType] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateServerType(s => {
+        if (s === serverTypes.length - 1) {
+          return 0
+        }
+        else {
+          return s + 1
+        }
+      });
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, []);
+
 
   return (
     <>
@@ -11,6 +33,29 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <div>
+        {/* Hero card */}
+        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+          <div className="relative shadow-xl sm:rounded-2xl sm:overflow-hidden">
+            <div className="absolute inset-0">
+              <img
+                className="h-full w-full object-cover"
+                src="https://static.vecteezy.com/system/resources/previews/001/907/544/original/flat-design-background-with-abstract-pattern-free-vector.jpg"
+                alt="People working on laptops"
+              />
+              <div className="absolute inset-0 bg-neutral-700 mix-blend-multiply" />
+            </div>
+            <div className="relative px-4 py-16 sm:px-6 sm:py-24 lg:py-32 lg:px-8">
+              <h1 className="text-center text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+                <span className="block text-white">Plugins for your</span>
+                <span className="block text-blue-700">{serverTypes[serverType]} Server</span>
+              </h1>
+            </div>
+          </div>
+        </div>
+
+        {/*  */}
+      </div>
 
     </>
   );
