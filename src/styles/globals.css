@@ -6,6 +6,6 @@
     html,
     body,
     #__next {
-        @apply bg-neutral-800;
+        @apply bg-neutral-800 text-neutral-200;
     }
 }
