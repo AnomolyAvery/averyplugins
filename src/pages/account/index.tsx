@@ -73,7 +73,10 @@ const Account: NextPage = () => {
                         </div>
                         <div className="mt-5 flex justify-center sm:mt-0">
                             <button
-                                onClick={() => signOut()}
+                                onClick={() => signOut({
+                                    redirect: true,
+                                    callbackUrl: '/'
+                                })}
                                 className="flex justify-center items-center px-4 py-2 border border-neutral-600 shadow-sm text-sm font-medium rounded-md text-neutral-300 bg-neutral-900 hover:bg-neutral-800"
                             >
                                 Sign out

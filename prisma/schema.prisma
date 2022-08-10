@@ -14,6 +14,37 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+model ProductImage {
+    id        String  @id @default(cuid())
+    url       String
+    product   Product @relation(fields: [productId], references: [id])
+    productId String
+
+    @@unique([productId, url])
+}
+
+enum ProductStatus {
+    Published
+    UnderReview
+    Draft
+}
+
+model Product {
+    id          String         @id @default(cuid())
+    name        String
+    icon        String         @db.VarChar(255)
+    overview    String
+    price       Int            @default(0)
+    description String         @db.Text
+    status      ProductStatus  @default(Draft)
+    owner       User           @relation(fields: [ownerId], references: [id])
+    ownerId     String
+    images      ProductImage[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @default(now())
+}
+
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -49,8 +80,10 @@ model User {
     image         String?
     role          String    @default("member")
     joinedAt      DateTime  @default(now())
+    verified      Boolean   @default(false)
     accounts      Account[]
     sessions      Session[]
+    Product       Product[]
 }
 
 model VerificationToken {

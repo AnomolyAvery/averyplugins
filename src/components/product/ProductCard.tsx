@@ -11,38 +11,45 @@ type Props = {
     owner: {
         name: string;
         image: string;
+        verified: boolean;
     }
 }
 
 const ProductCard: React.FC<Props> = ({ id, icon, name, price, overview, owner }) => {
     return (
         <Link href={`/products/${id}`}>
-            <a className='group inline-flex justify-start gap-4 bg-neutral-900 hover:bg-neutral-900/50 p-4 rounded-lg'>
-                <img className='w-20 h-20 group-hover:opacity-75' src={icon} alt={name} />
-                <div>
-                    <div className='flex flex-wrap justify-between items-center mb-4 lg:mb-0'>
-                        <h2 className='text-lg font-semibold'>
-                            {name}
-                        </h2>
-                        <div className='inline-flex items-center gap-2'>
-                            <img className='w-8 h-8 rounded-full' src={owner.image} />
-                            <h2 className='text-base'>
-                                {owner.name} <IoShieldCheckmarkSharp className='inline-block text-sky-500' />
-                            </h2>
+            <a className='bg-neutral-900 overflow-hidden hover:bg-neutral-900/50 p-4 rounded-lg flex flex-col gap-4'>
+                <div className='flex gap-4'>
+                    <img src={icon} className="w-12 h-12" />
+                    <div className='flex-grow flex flex-wrap justify-between gap-4'>
+                        <div
+                        >
+                            <h1 className='text-lg font-extrabold tracking-tight text-neutral-200'>{name}</h1>
+                            <p className='text-sm text-neutral-300'>${price / 100}</p>
+                        </div>
+                        <div className='hidden md:flex flex-wrap items-center'>
+                            <span className='inline-block relative'>
+                                <img
+                                    src={owner.image}
+                                    className="w-12 h-12 rounded-full"
+                                />
+                                <span className="">
+                                    {owner.verified && <IoShieldCheckmarkSharp className='absolute bottom-0 right-0 block h-3 w-3 rounded-full text-sky-500' />}
+                                </span>
+
+                            </span>
+
                         </div>
                     </div>
-                    <p
-                        className='text-base font-medium text-neutral-300 mb-1'
-                    >
-                        $<span>{(price / 100)}</span>
+                </div>
+                <div>
+                    <p className='text-sm text-neutral-300'>
+                        {overview}
                     </p>
-                    <p className='text-sm text-neutral-300 '>
-                        {overview.length > 100 ? overview.substring(0, 100) + '...' : overview}
-                    </p>
-
                 </div>
             </a>
         </Link>
+
     )
 }
 
