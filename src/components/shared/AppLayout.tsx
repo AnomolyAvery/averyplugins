@@ -79,52 +79,72 @@ const AppNav: React.FC = () => {
 
                                 {/* Profile dropdown */}
                                 {session && session.user && (
-                                    <Menu as="div" className="ml-3 relative">
-                                        <div>
-                                            <Menu.Button className="bg-neutral-900/50 rounded-full flex text-sm">
-                                                <span className="sr-only">Open user menu</span>
-                                                <img
-                                                    className="h-8 w-8 rounded-full"
-                                                    src={session.user.image ?? '/default_user.png'}
-                                                    alt=""
-                                                />
-                                            </Menu.Button>
-                                        </div>
-                                        <Transition
-                                            as={Fragment}
-                                            enter="transition ease-out duration-200"
-                                            enterFrom="transform opacity-0 scale-95"
-                                            enterTo="transform opacity-100 scale-100"
-                                            leave="transition ease-in duration-75"
-                                            leaveFrom="transform opacity-100 scale-100"
-                                            leaveTo="transform opacity-0 scale-95"
-                                        >
-                                            <Menu.Items className="z-50 origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-neutral-900 ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                                <Menu.Item>
-                                                    {({ active }) => (
-                                                        <NextLink href="/account" className={classNames(active ? 'bg-neutral-800' : '', 'block px-4 py-2 text-sm text-neutral-300')}>
-                                                            Account
-                                                        </NextLink>
+                                    <>
+                                        {session.user.role === "vendor" && (
+                                            <NextLink
+                                                href='/vendor'
+                                                className="text-neutral-300 hover:text-neutral-100 inline-flex items-center px-1 pt-1 text-sm font-medium"
+                                            >
+                                                Vendor
+                                            </NextLink>
+                                        )}
 
-                                                    )}
-                                                </Menu.Item>
-                                                <Menu.Item>
-                                                    {({ active }) => (
-                                                        <NextLink href='/account/purchases' className={classNames(active ? 'bg-neutral-800' : '', 'block px-4 py-2 text-sm text-neutral-300')}>
-                                                            Purchases
-                                                        </NextLink>
-                                                    )}
-                                                </Menu.Item>
-                                                <Menu.Item>
-                                                    {({ active }) => (
-                                                        <NextLink href='/signout' className={classNames(active ? 'bg-neutral-800' : '', 'block px-4 py-2 text-sm text-neutral-300')}>
-                                                            Sign out
-                                                        </NextLink>
-                                                    )}
-                                                </Menu.Item>
-                                            </Menu.Items>
-                                        </Transition>
-                                    </Menu>
+                                        {session.user.role === "admin" && (
+                                            <NextLink
+                                                href='/admin'
+                                                className="text-neutral-300 hover:text-neutral-100 inline-flex items-center px-1 pt-1 text-sm font-medium"
+                                            >
+                                                Admin
+                                            </NextLink>
+                                        )}
+
+                                        <Menu as="div" className="ml-3 relative">
+                                            <div>
+                                                <Menu.Button className="bg-neutral-900/50 rounded-full flex text-sm">
+                                                    <span className="sr-only">Open user menu</span>
+                                                    <img
+                                                        className="h-8 w-8 rounded-full"
+                                                        src={session.user.image ?? '/default_user.png'}
+                                                        alt=""
+                                                    />
+                                                </Menu.Button>
+                                            </div>
+                                            <Transition
+                                                as={Fragment}
+                                                enter="transition ease-out duration-200"
+                                                enterFrom="transform opacity-0 scale-95"
+                                                enterTo="transform opacity-100 scale-100"
+                                                leave="transition ease-in duration-75"
+                                                leaveFrom="transform opacity-100 scale-100"
+                                                leaveTo="transform opacity-0 scale-95"
+                                            >
+                                                <Menu.Items className="z-50 origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-neutral-900 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                                    <Menu.Item>
+                                                        {({ active }) => (
+                                                            <NextLink href="/account" className={classNames(active ? 'bg-neutral-800' : '', 'block px-4 py-2 text-sm text-neutral-300')}>
+                                                                Account
+                                                            </NextLink>
+
+                                                        )}
+                                                    </Menu.Item>
+                                                    <Menu.Item>
+                                                        {({ active }) => (
+                                                            <NextLink href='/account/purchases' className={classNames(active ? 'bg-neutral-800' : '', 'block px-4 py-2 text-sm text-neutral-300')}>
+                                                                Purchases
+                                                            </NextLink>
+                                                        )}
+                                                    </Menu.Item>
+                                                    <Menu.Item>
+                                                        {({ active }) => (
+                                                            <NextLink href='/signout' className={classNames(active ? 'bg-neutral-800' : '', 'block px-4 py-2 text-sm text-neutral-300')}>
+                                                                Sign out
+                                                            </NextLink>
+                                                        )}
+                                                    </Menu.Item>
+                                                </Menu.Items>
+                                            </Transition>
+                                        </Menu>
+                                    </>
                                 )}
 
                                 {status === "unauthenticated" && (

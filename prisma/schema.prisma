@@ -14,6 +14,26 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
+enum PurchaseStatus {
+    Pending
+    Paid
+    Cancelled
+}
+
+model Purchase {
+    id            String         @id @default(cuid())
+    status        PurchaseStatus @default(Pending)
+    paypalOrderId String
+
+    user    User    @relation(fields: [userId], references: [id])
+    product Product @relation(fields: [productId], references: [id])
+
+    userId    String
+    productId String
+
+    @@unique([userId, productId])
+}
+
 model ProductImage {
     id        String  @id @default(cuid())
     url       String
@@ -41,8 +61,9 @@ model Product {
     ownerId     String
     images      ProductImage[]
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @default(now())
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @default(now())
+    purchases Purchase[]
 }
 
 // Necessary for Next auth
@@ -73,17 +94,18 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String     @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?    @unique
     emailVerified DateTime?
     image         String?
-    role          String    @default("member")
-    joinedAt      DateTime  @default(now())
-    verified      Boolean   @default(false)
+    role          String     @default("member")
+    joinedAt      DateTime   @default(now())
+    verified      Boolean    @default(false)
     accounts      Account[]
     sessions      Session[]
-    Product       Product[]
+    products      Product[]
+    purchases     Purchase[]
 }
 
 model VerificationToken {

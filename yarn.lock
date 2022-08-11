@@ -159,6 +159,40 @@
   resolved "https://registry.yarnpkg.com/@panva/hkdf/-/hkdf-1.0.2.tgz#bab0f09d09de9fd83628220d496627681bc440d6"
   integrity sha512-MSAs9t3Go7GUkMhpKC44T58DJ5KGk2vBo+h1cqQeqlMfdGkxaVB78ZWpv9gYi/g2fa4sopag9gJsNvS8XGgWJA==
 
+"@paypal/checkout-server-sdk@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@paypal/checkout-server-sdk/-/checkout-server-sdk-1.0.3.tgz#1de69f5c1af8d74ec0e9e26be9ed225d98a1e453"
+  integrity sha512-UEdq8akEdMz0Vs4qoQFU2gMp8PpyE/HKyMwiZuK4vIWUKl8jfd1fWKjQN5cDFm9NkFUIp5U7h++rdMOVj9WMNA==
+  dependencies:
+    "@paypal/paypalhttp" "^1.0.1"
+
+"@paypal/paypal-js@^5.0.6":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@paypal/paypal-js/-/paypal-js-5.1.1.tgz#81ab1f78dd2001061a2472f561d20df687a1d295"
+  integrity sha512-MMQ8TA048gTB43pzEOMzod8WY8hfzy+ahd7w29LtMvXduqzp7/29WxrTlsy4k6ARG6WGJ/uGqpc4+la4UZEQgw==
+  dependencies:
+    promise-polyfill "^8.2.3"
+
+"@paypal/paypalhttp@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@paypal/paypalhttp/-/paypalhttp-1.0.1.tgz#406e337bf86cec7ea58c42eb167eb9b57ed88110"
+  integrity sha512-DC7AHxTT7drF6dUi3YaFdPVuT15sIkpD5H2eHmdtFgxM4UanS1o1ZDfMhR9mpxd8o+X6pz2r+EZVRRq+n1cssQ==
+
+"@paypal/react-paypal-js@^7.8.1":
+  version "7.8.1"
+  resolved "https://registry.yarnpkg.com/@paypal/react-paypal-js/-/react-paypal-js-7.8.1.tgz#ab5b62240552cf38ff4782c4925ef4d99a8bf444"
+  integrity sha512-+cAa0QLJUO1TUlFk/xqJsfEm6Ywtg3kvMmxf2EJcmVJDkNHc6+7Qq2o6Gt1mTn16ZG4/2uWRROeKcoXFFdNrQA==
+  dependencies:
+    "@paypal/paypal-js" "^5.0.6"
+    "@paypal/sdk-constants" "^1.0.116"
+
+"@paypal/sdk-constants@^1.0.116":
+  version "1.0.122"
+  resolved "https://registry.yarnpkg.com/@paypal/sdk-constants/-/sdk-constants-1.0.122.tgz#f3cd4fc67407ba5291b0f1d70693230da80feea9"
+  integrity sha512-bxML2CX9acBGuigb5aCz1E8wcxtRpuXuY2hvfQKAG9fB0zG9d8nEcRiSYavbx4n2UM5TqwEcFo/roPD3aqykOg==
+  dependencies:
+    hi-base32 "^0.5.0"
+
 "@prisma/client@^4.1.1":
   version "4.1.1"
   resolved "https://registry.yarnpkg.com/@prisma/client/-/client-4.1.1.tgz#dcb1118397deb8247fbe39a1f3eee5606648adf8"
@@ -181,12 +215,24 @@
   resolved "https://registry.yarnpkg.com/@rushstack/eslint-patch/-/eslint-patch-1.1.4.tgz#0c8b74c50f29ee44f423f7416829c0bf8bb5eb27"
   integrity sha512-LwzQKA4vzIct1zNZzBmRKI9QuNpLgTQMEjsQLf3BXuGYb3QPTP4Yjf6mkdX+X1mYttZ808QpOwAzZjv28kq7DA==
 
+"@stripe/stripe-js@^1.35.0":
+  version "1.35.0"
+  resolved "https://registry.yarnpkg.com/@stripe/stripe-js/-/stripe-js-1.35.0.tgz#f809e2e5e0a00f01aa12e8aed0b89d27728c05c0"
+  integrity sha512-UIuzpbJqgXCTvJhY/aZYvBtaKdMfQgnIv6kkLlfRJ9smZcC4zoPvq3j7k9wobYI+idHAWP4BRiPnqA8lvzJCtg==
+
 "@swc/helpers@0.4.3":
   version "0.4.3"
   resolved "https://registry.yarnpkg.com/@swc/helpers/-/helpers-0.4.3.tgz#16593dfc248c53b699d4b5026040f88ddb497012"
   integrity sha512-6JrF+fdUK2zbGpJIlN7G3v966PQjyx/dPt1T9km2wj+EUBqgrxCk3uX4Kct16MIm9gGxfKRcfax2hVf5jvlTzA==
   dependencies:
     tslib "^2.4.0"
+
+"@tailwindcss/forms@^0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@tailwindcss/forms/-/forms-0.5.2.tgz#4ef45f9916dcb37838cbe7fecdcc4ba7a7c2ab59"
+  integrity sha512-pSrFeJB6Bg1Mrg9CdQW3+hqZXAKsBrSG9MAfFLKy1pVA4Mb4W7C0k7mEhlmS2Dfo/otxrQOET7NJiJ9RrS563w==
+  dependencies:
+    mini-svg-data-uri "^1.2.3"
 
 "@tailwindcss/typography@^0.5.4":
   version "0.5.4"
@@ -229,10 +275,29 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
+"@types/node@*", "@types/node@>=8.1.0":
+  version "18.7.1"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.7.1.tgz#352bee64f93117d867d05f7406642a52685cbca6"
+  integrity sha512-GKX1Qnqxo4S+Z/+Z8KKPLpH282LD7jLHWJcVryOflnsnH+BtSDfieR6ObwBMwpnNws0bUK8GI7z0unQf9bARNQ==
+
 "@types/node@18.0.0":
   version "18.0.0"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-18.0.0.tgz#67c7b724e1bcdd7a8821ce0d5ee184d3b4dd525a"
   integrity sha512-cHlGmko4gWLVI27cGJntjs/Sj8th9aYwplmZFwmmgYQQvL5NUsgVJG7OddLvNfLqYS31KFN0s3qlaD9qCaxACA==
+
+"@types/paypal__checkout-server-sdk@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@types/paypal__checkout-server-sdk/-/paypal__checkout-server-sdk-1.0.4.tgz#6ae159c5c305e48845d399137f939cb1e487f186"
+  integrity sha512-vyFa17eO7EcecL6Cg3oZKdgGpmfEnXlPjUAuNLP3K6iGowlXXURdCmkZe/h0dECXgOO2qmZu5EYc1dzFSezLbw==
+  dependencies:
+    "@types/paypal__paypalhttp" "*"
+
+"@types/paypal__paypalhttp@*":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/paypal__paypalhttp/-/paypal__paypalhttp-1.0.0.tgz#444bbcc0874b6ffe0f922c20de9e5250a3e4bcd7"
+  integrity sha512-JSrGEKWT+VnMNNkOFPYRcBdv/W5FuDP0ZDp9KxExZVEtX8xZTO4NFfkG9gkQ+g/RnEbVZnFwrQ04LH5HLio5Gw==
+  dependencies:
+    "@types/node" "*"
 
 "@types/prop-types@*":
   version "15.7.5"
@@ -1181,6 +1246,11 @@ has@^1.0.3:
   dependencies:
     function-bind "^1.1.1"
 
+hi-base32@^0.5.0:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/hi-base32/-/hi-base32-0.5.1.tgz#1279f2ddae2673219ea5870c2121d2a33132857e"
+  integrity sha512-EmBBpvdYh/4XxsnUybsPag6VikPYnN30td+vQk+GI3qpahVEG9+gTkG0aXVxTjBqQ5T6ijbWIu77O+C5WFWsnA==
+
 ignore@^5.2.0:
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/ignore/-/ignore-5.2.0.tgz#6d3bac8fa7fe0d45d9f9be7bac2fc279577e345a"
@@ -1471,6 +1541,11 @@ microseconds@0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/microseconds/-/microseconds-0.2.0.tgz#233b25f50c62a65d861f978a4a4f8ec18797dc39"
   integrity sha512-n7DHHMjR1avBbSpsTBj6fmMGh2AGrifVV4e+WYc3Q9lO+xnSZ3NyhcBND3vzzatt05LFhoKFRxrIyklmLlUtyA==
+
+mini-svg-data-uri@^1.2.3:
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/mini-svg-data-uri/-/mini-svg-data-uri-1.4.4.tgz#8ab0aabcdf8c29ad5693ca595af19dd2ead09939"
+  integrity sha512-r9deDe9p5FJUPZAk3A59wGH7Ii9YrjjWw0jmw/liSbHl2CHiyXj6FcDXDu2K3TjVAXqiJdaw3xxwlZZr9E6nHg==
 
 minimatch@^3.0.4, minimatch@^3.1.1, minimatch@^3.1.2:
   version "3.1.2"
@@ -1843,6 +1918,11 @@ prisma@^4.1.1:
   dependencies:
     "@prisma/engines" "4.1.1"
 
+promise-polyfill@^8.2.3:
+  version "8.2.3"
+  resolved "https://registry.yarnpkg.com/promise-polyfill/-/promise-polyfill-8.2.3.tgz#2edc7e4b81aff781c88a0d577e5fe9da822107c6"
+  integrity sha512-Og0+jCRQetV84U8wVjMNccfGCnMQ9mGs9Hv78QFe+pSDD3gWTpz0y+1QCuxy5d/vBFuZ3iwP2eycAkvqIMPmWg==
+
 prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.8.1.tgz#67d87bf1a694f48435cf332c24af10214a3140b5"
@@ -1856,6 +1936,13 @@ punycode@^2.1.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
+
+qs@^6.10.3:
+  version "6.11.0"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.11.0.tgz#fd0d963446f7a65e1367e01abd85429453f0c37a"
+  integrity sha512-MvjoMCJwEarSbUYk5O+nmoSzSutSsTwF85zcHPQ9OrlFoZOYIjaqBAJIqIXjptyD5vThxGq52Xu/MaJzRkIk4Q==
+  dependencies:
+    side-channel "^1.0.4"
 
 queue-microtask@^1.2.2:
   version "1.2.3"
@@ -2084,6 +2171,14 @@ strip-json-comments@^3.1.0, strip-json-comments@^3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-3.1.1.tgz#31f1281b3832630434831c310c01cccda8cbe006"
   integrity sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==
+
+stripe@^10.1.0:
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/stripe/-/stripe-10.1.0.tgz#e1c3659ec7ca16faab0386a5ef9b4480c206af66"
+  integrity sha512-J5TF8ACY+aE2S0N9Uch/rXTmMwKvcrakoHFMW0hLOFpOEAUF6C+zHU4U9zNmJVBS7TQ2TLFb22EA9aHNUWi0Vg==
+  dependencies:
+    "@types/node" ">=8.1.0"
+    qs "^6.10.3"
 
 styled-jsx@5.0.2:
   version "5.0.2"
