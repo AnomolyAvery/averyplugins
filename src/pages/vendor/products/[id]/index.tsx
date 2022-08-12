@@ -1,0 +1,37 @@
+import { useRouter } from "next/router";
+import ProductForm from "../../../../components/product/ProductForm";
+import VendorLayout from "../../../../components/vendor/VendorLayout";
+import { trpc } from "../../../../utils/trpc";
+
+const VendorProduct = () => {
+
+    const router = useRouter();
+
+    const id = router.query.id as string;
+
+    const { data: product, status } = trpc.useQuery(['vendor.getProduct', {
+        id,
+    }]);
+
+    return (
+        <VendorLayout>
+            {product && (
+                <div className="flex flex-col justify-between">
+
+                    <div>
+                        <ProductForm
+                            name={product.name}
+                            price={(product.price / 100)}
+                            overview={product.overview}
+                            description={product.description}
+                            newProduct={false}
+                        />
+                    </div>
+                </div>
+            )}
+
+        </VendorLayout>
+    )
+};
+
+export default VendorProduct;

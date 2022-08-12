@@ -193,6 +193,7 @@ const AppNav: React.FC = () => {
                             )}
                             {session && session.user && (
                                 <>
+
                                     <div className="flex items-center px-4">
                                         <div className="flex-shrink-0">
                                             <img
@@ -207,6 +208,25 @@ const AppNav: React.FC = () => {
                                         </div>
                                     </div>
                                     <div className="mt-3 space-y-1">
+
+                                        {session.user.role === "admin" && (
+                                            <Disclosure.Button
+                                                as={NextLink}
+                                                href="/admin"
+                                                className="block px-4 py-2 text-base font-medium text-neutral-300 hover:text-white hover:bg-neutral-800"
+                                            >
+                                                Admin
+                                            </Disclosure.Button>
+                                        )}
+                                        {session.user.role === "vendor" && (
+                                            <Disclosure.Button
+                                                as={NextLink}
+                                                href="/vendor"
+                                                className="block px-4 py-2 text-base font-medium text-neutral-300 hover:text-white hover:bg-neutral-800"
+                                            >
+                                                Vendor
+                                            </Disclosure.Button>
+                                        )}
                                         <Disclosure.Button
                                             as={NextLink}
                                             href="/account"

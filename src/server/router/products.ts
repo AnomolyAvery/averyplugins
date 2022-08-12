@@ -1,5 +1,11 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
+import { env } from "../../env/server.mjs";
+import { s3Client } from "../lib/s3";
+import { getSignedUrl, S3RequestPresigner } from '@aws-sdk/s3-request-presigner';
 import { createRouter } from "./context";
+import { createProtectedRouter } from "./protected-router";
+import { GetObjectCommand, GetObjectCommandInput } from "@aws-sdk/client-s3";
 
 export const productsRouter = createRouter()
     .query('getProducts', {
@@ -55,6 +61,68 @@ export const productsRouter = createRouter()
             }
         }
     })
+    .merge('user.', createProtectedRouter()
+        .mutation('download', {
+            input: z.object({
+                productId: z.string().min(1),
+            }),
+            async resolve({ ctx, input }) {
+                const { productId } = input;
+
+                const userId = ctx.session.user.id;
+
+                const purchase = await ctx.prisma.purchase.findUnique({
+                    where: {
+                        userId_productId: {
+                            productId: productId,
+                            userId: userId,
+                        }
+                    }
+                });
+
+                if (!purchase) {
+                    throw new TRPCError({
+                        code: "BAD_REQUEST"
+                    })
+                }
+
+                const file = await ctx.prisma.productFile.findFirst({
+                    where: {
+                        productId: productId,
+                    },
+                    orderBy: {
+                        createdAt: 'desc'
+                    },
+                    take: 1,
+                });
+
+                if (!file) {
+                    throw new TRPCError({
+                        code: "BAD_REQUEST"
+                    });
+                }
+
+                const bucket = env.S3_PLUGIN_BUCKET;
+
+                const key = file.fileUrl;
+
+
+                const getObjectParams: GetObjectCommandInput = {
+                    Bucket: bucket,
+                    Key: key,
+                };
+
+                const command = new GetObjectCommand(getObjectParams);
+
+                const url = await getSignedUrl(s3Client, command, {
+                    expiresIn: 3600,
+                })
+
+                return {
+                    url,
+                }
+            }
+        }))
     .query('getProduct', {
         input: z.object({
             id: z.string().min(1)
@@ -82,6 +150,16 @@ export const productsRouter = createRouter()
                         }
                     },
                     description: true,
+                    purchases: {
+                        where: {
+                            userId: {
+                                equals: ctx.session?.user?.id,
+                            }
+                        },
+                        select: {
+                            status: true,
+                        }
+                    }
                 }
             });
 

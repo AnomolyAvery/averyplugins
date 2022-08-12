@@ -13,6 +13,10 @@ export const serverSchema = z.object({
     DISCORD_CLIENT_ID: z.string(),
     DISCORD_CLIENT_SECRET: z.string(),
     PAYPAL_CLIENT_SECRET: z.string(),
+    S3_REGION: z.string(),
+    // Used for file uploads for plugins
+    // Used for images uploaded for plugins
+    S3_PLUGIN_BUCKET: z.string(),
 });
 
 /**
