@@ -17,6 +17,9 @@ datasource db {
 model Vendor {
     id          String @id @default(cuid())
     paypalEmail String
+
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
 }
 
 model ProductFile {
@@ -25,7 +28,7 @@ model ProductFile {
     version String
     fileUrl String
 
-    product   Product @relation(fields: [productId], references: [id])
+    product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
     productId String
 
     createdAt DateTime @default(now())
@@ -69,7 +72,7 @@ enum ProductStatus {
 model Product {
     id          String         @id @default(cuid())
     name        String
-    icon        String         @db.VarChar(255)
+    icon        String?        @db.VarChar(255)
     overview    String
     price       Int            @default(0)
     description String         @db.Text
@@ -124,6 +127,7 @@ model User {
     sessions      Session[]
     products      Product[]
     purchases     Purchase[]
+    Vendor        Vendor[]
 }
 
 model VerificationToken {

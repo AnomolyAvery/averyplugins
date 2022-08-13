@@ -4,6 +4,7 @@ import type { AppRouter } from "../server/router";
 import type { AppType } from "next/dist/shared/lib/utils";
 import superjson from "superjson";
 import { SessionProvider } from "next-auth/react";
+import toast, { Toaster } from 'react-hot-toast';
 import "../styles/globals.css";
 import AppLayout from "../components/shared/AppLayout";
 
@@ -15,8 +16,8 @@ const MyApp: AppType = ({
     <SessionProvider session={session}>
       <AppLayout>
         <Component {...pageProps} />
+        <Toaster />
       </AppLayout>
-
     </SessionProvider>
   );
 };

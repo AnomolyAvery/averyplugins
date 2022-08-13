@@ -17,6 +17,8 @@ export const serverSchema = z.object({
     // Used for file uploads for plugins
     // Used for images uploaded for plugins
     S3_PLUGIN_BUCKET: z.string(),
+    S3_ACCESS_KEY: z.string(),
+    S3_SECRET_KEY: z.string(),
 });
 
 /**

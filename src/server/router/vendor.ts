@@ -2,6 +2,10 @@ import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createProtectedRouter } from "./protected-router";
 import * as Showdown from 'showdown';
+import { s3Client } from "../lib/s3";
+import { env } from "../../env/server.mjs";
+import { PutObjectAclCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const converter = new Showdown.Converter({
     tables: true,
@@ -55,9 +59,6 @@ export const vendorRouter = createProtectedRouter()
 
 
             let nextCursor: typeof cursor | null = null;
-            let previousCursor: typeof cursor | null = null;
-
-
 
             if (products.length > limit) {
                 const nextItem = products.pop();
@@ -65,19 +66,9 @@ export const vendorRouter = createProtectedRouter()
                 nextCursor = nextItem!.id;
             }
 
-            if (cursor) {
-                const previousItem = products.shift();
-
-                previousCursor = previousItem!.id;
-            }
-
-
-
-
             return {
                 products,
                 nextCursor,
-                previousCursor
             }
         }
     })
@@ -198,5 +189,102 @@ export const vendorRouter = createProtectedRouter()
             });
 
             return updatedProduct;
+        }
+    })
+    .mutation('getIconPresignedUrl', {
+        input: z.object({
+            id: z.string().min(1),
+        }),
+        async resolve({ ctx, input }) {
+            const { id } = input;
+            const userId = ctx.session.user.id;
+
+            const product = await ctx.prisma.product.findFirst({
+                where: {
+                    id,
+                }
+            });
+
+            if (!product) {
+                throw new TRPCError({
+                    code: "NOT_FOUND"
+                });
+            }
+
+            if (product.ownerId !== userId) {
+                throw new TRPCError({
+                    code: "UNAUTHORIZED"
+                });
+            }
+
+            // Grant access to read the object for all users
+            const putObjectCmd = new PutObjectCommand({
+                Bucket: env.S3_PLUGIN_BUCKET,
+                Key: `plugins/${product.id}/icon.png`,
+                ContentType: 'image/*',
+                ACL: 'public-read',
+            });
+
+            try {
+                const url = await getSignedUrl(s3Client, putObjectCmd, {
+                    expiresIn: 15 * 60,
+                });
+
+                return {
+                    url,
+                };
+            } catch (e) {
+                throw new TRPCError({
+                    code: "INTERNAL_SERVER_ERROR"
+                });
+            }
+        }
+    })
+    .mutation('setIcon', {
+        input: z.object({
+            id: z.string().min(1),
+        }),
+        async resolve({ ctx, input }) {
+            const product = await ctx.prisma.product.findUnique({
+                where: {
+                    id: input.id,
+                }
+            });
+
+            if (!product) {
+                throw new TRPCError({
+                    code: "NOT_FOUND"
+                });
+            }
+
+            if (product.ownerId !== ctx.session.user.id) {
+                throw new TRPCError({
+                    code: "UNAUTHORIZED"
+                });
+            }
+
+            // Grant access to read the object for all users
+            const putObjectAclCmd = new PutObjectAclCommand({
+                Bucket: env.S3_PLUGIN_BUCKET,
+                Key: `plugins/${product.id}/icon.png`,
+                ACL: 'public-read',
+            });
+
+            try {
+                await s3Client.send(putObjectAclCmd);
+            } catch (e) {
+                throw new TRPCError({
+                    code: "INTERNAL_SERVER_ERROR"
+                });
+            }
+
+            await ctx.prisma.product.update({
+                where: {
+                    id: input.id,
+                },
+                data: {
+                    icon: `https://averyplugins.us-southeast-1.linodeobjects.com/plugins/${input.id}/icon.png`,
+                }
+            });
         }
     })

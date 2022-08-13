@@ -5,6 +5,7 @@ import * as Showdown from "showdown";
 import "react-mde/lib/styles/css/react-mde-all.css";
 import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
+import toast from 'react-hot-toast';
 
 
 const converter = new Showdown.Converter({
@@ -15,6 +16,7 @@ const converter = new Showdown.Converter({
 });
 
 type Props = {
+    id?: string;
     name?: string;
     price?: number;
     overview?: string;
@@ -23,6 +25,7 @@ type Props = {
 }
 
 const ProductForm: React.FC<Props> = ({
+    id,
     name = "",
     price = 0,
     overview = "",
@@ -39,7 +42,7 @@ const ProductForm: React.FC<Props> = ({
     const router = useRouter();
 
 
-    const { mutateAsync: createProductAsync, error } = trpc.useMutation(['vendor.createProduct']);
+    const { mutateAsync: createProductAsync } = trpc.useMutation(['vendor.createProduct']);
     const { mutateAsync: updateProductAsync } = trpc.useMutation(['vendor.updateProduct']);
 
     const [n, updateName] = useState(name);
@@ -105,6 +108,7 @@ const ProductForm: React.FC<Props> = ({
 
         if (newProduct) {
             const { id } = await createProductAsync(product);
+            toast.success('Product created');
 
             router.push(`/vendor/products/${id}`);
         }
@@ -113,7 +117,7 @@ const ProductForm: React.FC<Props> = ({
                 ...product,
                 id: router.query.id as string,
             });
-            alert('Product updated');
+            toast.success('Product updated');
         }
     };
 
@@ -194,7 +198,7 @@ const ProductForm: React.FC<Props> = ({
                             <div className='mt-1'>
                                 {errors && errors.overview && <p className='text-red-600 text-sm'>{errors.overview}</p>}
                             </div>
-                            <p className="mt-2 text-sm text-gray-500">Write a few sentences about.</p>
+                            <p className="mt-2 text-sm text-neutral-400">Write a few sentences about.</p>
                         </div>
 
                         <div className='sm:col-span-6'>
