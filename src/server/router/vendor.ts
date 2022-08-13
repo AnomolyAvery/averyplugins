@@ -32,6 +32,20 @@ export const vendorRouter = createProtectedRouter()
             },
         });
     })
+    .query('dashboard', {
+        async resolve({ ctx }) {
+
+            const productCount = await ctx.prisma.product.count({
+                where: {
+                    ownerId: ctx.session.user.id,
+                }
+            });
+
+            return {
+                productCount,
+            }
+        }
+    })
     .query('getProducts', {
         input: z.object({
             limit: z.number().min(1).max(100).nullish(),
@@ -190,101 +204,4 @@ export const vendorRouter = createProtectedRouter()
 
             return updatedProduct;
         }
-    })
-    .mutation('getIconPresignedUrl', {
-        input: z.object({
-            id: z.string().min(1),
-        }),
-        async resolve({ ctx, input }) {
-            const { id } = input;
-            const userId = ctx.session.user.id;
-
-            const product = await ctx.prisma.product.findFirst({
-                where: {
-                    id,
-                }
-            });
-
-            if (!product) {
-                throw new TRPCError({
-                    code: "NOT_FOUND"
-                });
-            }
-
-            if (product.ownerId !== userId) {
-                throw new TRPCError({
-                    code: "UNAUTHORIZED"
-                });
-            }
-
-            // Grant access to read the object for all users
-            const putObjectCmd = new PutObjectCommand({
-                Bucket: env.S3_PLUGIN_BUCKET,
-                Key: `plugins/${product.id}/icon.png`,
-                ContentType: 'image/*',
-                ACL: 'public-read',
-            });
-
-            try {
-                const url = await getSignedUrl(s3Client, putObjectCmd, {
-                    expiresIn: 15 * 60,
-                });
-
-                return {
-                    url,
-                };
-            } catch (e) {
-                throw new TRPCError({
-                    code: "INTERNAL_SERVER_ERROR"
-                });
-            }
-        }
-    })
-    .mutation('setIcon', {
-        input: z.object({
-            id: z.string().min(1),
-        }),
-        async resolve({ ctx, input }) {
-            const product = await ctx.prisma.product.findUnique({
-                where: {
-                    id: input.id,
-                }
-            });
-
-            if (!product) {
-                throw new TRPCError({
-                    code: "NOT_FOUND"
-                });
-            }
-
-            if (product.ownerId !== ctx.session.user.id) {
-                throw new TRPCError({
-                    code: "UNAUTHORIZED"
-                });
-            }
-
-            // Grant access to read the object for all users
-            const putObjectAclCmd = new PutObjectAclCommand({
-                Bucket: env.S3_PLUGIN_BUCKET,
-                Key: `plugins/${product.id}/icon.png`,
-                ACL: 'public-read',
-            });
-
-            try {
-                await s3Client.send(putObjectAclCmd);
-            } catch (e) {
-                throw new TRPCError({
-                    code: "INTERNAL_SERVER_ERROR"
-                });
-            }
-
-            await ctx.prisma.product.update({
-                where: {
-                    id: input.id,
-                },
-                data: {
-                    icon: `https://averyplugins.us-southeast-1.linodeobjects.com/plugins/${input.id}/icon.png`,
-                }
-            });
-        }
-    })
+    });

@@ -6,6 +6,7 @@ import "react-mde/lib/styles/css/react-mde-all.css";
 import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
 import toast from 'react-hot-toast';
+import IconUpload from './IconUpload';
 
 
 const converter = new Showdown.Converter({
@@ -17,6 +18,7 @@ const converter = new Showdown.Converter({
 
 type Props = {
     id?: string;
+    icon?: string;
     name?: string;
     price?: number;
     overview?: string;
@@ -26,6 +28,7 @@ type Props = {
 
 const ProductForm: React.FC<Props> = ({
     id,
+    icon,
     name = "",
     price = 0,
     overview = "",
@@ -200,6 +203,11 @@ const ProductForm: React.FC<Props> = ({
                             </div>
                             <p className="mt-2 text-sm text-neutral-400">Write a few sentences about.</p>
                         </div>
+                        {!newProduct && id && (
+                            <div className="sm:col-span-3">
+                                <IconUpload productId={id} currentIcon={icon} />
+                            </div>
+                        )}
 
                         <div className='sm:col-span-6'>
                             <ReactMde
