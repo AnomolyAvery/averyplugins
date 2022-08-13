@@ -41,8 +41,17 @@ export const vendorRouter = createProtectedRouter()
                 }
             });
 
+            const customerCount = await ctx.prisma.user.count({
+                where: {
+                    role: {
+                        equals: "member"
+                    }
+                }
+            });
+
             return {
                 productCount,
+                customerCount,
             }
         }
     })
