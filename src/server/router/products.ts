@@ -165,4 +165,33 @@ export const productsRouter = createRouter()
 
             return product;
         }
-    });
+    })
+    .query('getProductGallery', {
+        input: z.object({
+            id: z.string().min(1)
+        }),
+        async resolve({ ctx, input }) {
+            const { id } = input;
+            const product = await ctx.prisma.product.findUnique({
+                where: {
+                    id,
+                },
+                select: {
+                    images: {
+                        select: {
+                            id: true,
+                            url: true,
+                        }
+                    }
+                }
+            });
+
+            if (!product) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST"
+                })
+            }
+
+            return product.images;
+        }
+    })

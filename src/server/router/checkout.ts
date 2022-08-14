@@ -40,12 +40,11 @@ export const checkoutRouter = createProtectedRouter()
                 })
             }
 
-            const purchase = await ctx.prisma.purchase.findUnique({
+            const purchase = await ctx.prisma.purchase.findFirst({
                 where: {
-                    userId_productId: {
-                        userId,
-                        productId: product.id,
-                    }
+                    userId,
+                    productId: product.id,
+                    status: "Paid"
                 }
             });
 

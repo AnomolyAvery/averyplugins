@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { trpc } from '../../utils/trpc';
 import toast from 'react-hot-toast';
 import IconUpload from './IconUpload';
+import ProductGallery from './ProductGallery';
 
 
 const converter = new Showdown.Converter({
@@ -206,6 +207,12 @@ const ProductForm: React.FC<Props> = ({
                         {!newProduct && id && (
                             <div className="sm:col-span-3">
                                 <IconUpload productId={id} currentIcon={icon} />
+                            </div>
+                        )}
+
+                        {!newProduct && id && (
+                            <div className='sm:col-span-6'>
+                                <ProductGallery productId={id} />
                             </div>
                         )}
 

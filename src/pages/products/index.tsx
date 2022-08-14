@@ -26,7 +26,7 @@ const Products: NextPage = () => {
                                 id={product.id}
                                 name={product.name}
                                 price={product.price}
-                                icon={product.icon}
+                                icon={product.icon ?? ''}
                                 overview={product.overview}
                                 owner={{
                                     name: product.owner.name ?? '',
