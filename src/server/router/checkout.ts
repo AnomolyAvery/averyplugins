@@ -83,6 +83,28 @@ export const checkoutRouter = createProtectedRouter()
                         })
                     }
 
+                    const purchase = await ctx.prisma.purchase.findUnique({
+                        where: {
+                            userId_productId: {
+                                userId: ctx.session.user.id,
+                                productId,
+                            }
+                        },
+                        select: {
+                            id: true,
+                        }
+                    });
+
+                    if (purchase) {
+                        await ctx.prisma.purchase.delete({
+                            where: {
+                                id: purchase.id,
+                            }
+                        });
+                    }
+
+                    const originUrl = ctx.req?.headers.referer;
+
                     const paypalClient = client();
 
                     const request = new paypal.orders.OrdersCreateRequest();
@@ -96,7 +118,14 @@ export const checkoutRouter = createProtectedRouter()
                                     value: (product.price / 100).toFixed(2),
                                 }
                             }
-                        ]
+                        ],
+                        application_context: {
+                            shipping_preference: "NO_SHIPPING",
+                            brand_name: "AveryPlugins",
+                            cancel_url: `${originUrl}/checkout/${productId}`,
+                            user_action: "PAY_NOW",
+                            return_url: `${originUrl}/checkout/${productId}`,
+                        }
                     });
 
                     const response = await paypalClient.execute(request);
@@ -158,6 +187,50 @@ export const checkoutRouter = createProtectedRouter()
                     return {
                         ...response.result
                     };
+                }
+            })
+            .mutation('cancelOrder', {
+                input: z.object({
+                    orderID: z.string().min(1)
+                }),
+                async resolve({ ctx, input }) {
+                    const { orderID } = input;
+
+                    const userId = ctx.session.user.id;
+
+                    const purchase = await ctx.prisma.purchase.findFirst({
+                        where: {
+                            paypalOrderId: orderID,
+                            userId: userId,
+                        }
+                    });
+
+                    if (!purchase) {
+                        throw new TRPCError({
+                            code: "BAD_REQUEST",
+                            message: "Purchase not found"
+                        })
+                    }
+
+                    const updated = await ctx.prisma.purchase.update({
+                        where: {
+                            id: purchase.id
+                        },
+                        data: {
+                            status: "Cancelled"
+                        }
+                    });
+
+                    if (!updated) {
+                        throw new TRPCError({
+                            code: "BAD_REQUEST",
+                            message: "Purchase not found"
+                        })
+                    }
+
+                    return {
+                        status: "Cancelled"
+                    }
                 }
             })
     );

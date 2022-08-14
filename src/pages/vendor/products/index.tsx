@@ -20,7 +20,6 @@ const ProductsManage: NextPage = () => {
         limit: 5,
     }], {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
-        getPreviousPageParam: (firstPage, pages) => firstPage.previousCursor
     });
 
 
@@ -73,7 +72,7 @@ const ProductsManage: NextPage = () => {
                                                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                                                             <div className="flex items-center">
                                                                 <div className="h-10 w-10 flex-shrink-0">
-                                                                    <img className="h-10 w-10 rounded-full" src={product.icon} alt="" />
+                                                                    <img className="h-10 w-10 rounded-full" src={product.icon ?? ''} alt="" />
                                                                 </div>
                                                                 <div className="ml-4">
                                                                     <div className="font-medium text-neutral-200">{product.name}</div>
