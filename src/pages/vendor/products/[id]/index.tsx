@@ -15,6 +15,7 @@ const VendorProduct = () => {
     const { data: product, status } = trpc.useQuery(['vendor.getProduct', {
         id,
     }]);
+
     return (
         <VendorLayout>
             {product && (

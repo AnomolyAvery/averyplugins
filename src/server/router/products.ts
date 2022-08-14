@@ -61,68 +61,6 @@ export const productsRouter = createRouter()
             }
         }
     })
-    .merge('user.', createProtectedRouter()
-        .mutation('download', {
-            input: z.object({
-                productId: z.string().min(1),
-            }),
-            async resolve({ ctx, input }) {
-                const { productId } = input;
-
-                const userId = ctx.session.user.id;
-
-                const purchase = await ctx.prisma.purchase.findUnique({
-                    where: {
-                        userId_productId: {
-                            productId: productId,
-                            userId: userId,
-                        }
-                    }
-                });
-
-                if (!purchase) {
-                    throw new TRPCError({
-                        code: "BAD_REQUEST"
-                    })
-                }
-
-                const file = await ctx.prisma.productFile.findFirst({
-                    where: {
-                        productId: productId,
-                    },
-                    orderBy: {
-                        createdAt: 'desc'
-                    },
-                    take: 1,
-                });
-
-                if (!file) {
-                    throw new TRPCError({
-                        code: "BAD_REQUEST"
-                    });
-                }
-
-                const bucket = env.S3_PLUGIN_BUCKET;
-
-                const key = file.fileUrl;
-
-
-                const getObjectParams: GetObjectCommandInput = {
-                    Bucket: bucket,
-                    Key: key,
-                };
-
-                const command = new GetObjectCommand(getObjectParams);
-
-                const url = await getSignedUrl(s3Client, command, {
-                    expiresIn: 3600,
-                })
-
-                return {
-                    url,
-                }
-            }
-        }))
     .query('getProduct', {
         input: z.object({
             id: z.string().min(1)
@@ -193,5 +131,103 @@ export const productsRouter = createRouter()
             }
 
             return product.images;
+        }
+    })
+    .query('getProductVersions', {
+        input: z.object({
+            id: z.string().min(1)
+        }),
+        async resolve({ ctx, input }) {
+            const { id } = input;
+
+            const files = await ctx.prisma.productFile.findMany({
+                where: {
+                    productId: {
+                        equals: id,
+                    },
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    version: true,
+                    createdAt: true,
+                }
+            });
+
+            return files;
+        }
+    })
+    .mutation('getDownloadUrl', {
+        input: z.object({
+            id: z.string().min(1)
+        }),
+        async resolve({ ctx, input }) {
+            const { id } = input;
+
+            if (!ctx.session?.user) {
+                throw new TRPCError({
+                    code: "UNAUTHORIZED"
+                });
+            }
+
+            const userId = ctx.session.user.id;
+
+            const purchase = await ctx.prisma.purchase.findUnique({
+                where: {
+                    userId_productId: {
+                        productId: id,
+                        userId,
+                    }
+                },
+                select: {
+                    status: true,
+                }
+            });
+
+            if (!purchase) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST"
+                });
+            }
+
+            if (purchase.status !== "Paid") {
+                throw new TRPCError({
+                    code: "BAD_REQUEST"
+                });
+            }
+
+            const file = await ctx.prisma.productFile.findFirst({
+                where: {
+                    productId: id,
+                },
+                orderBy: {
+                    createdAt: "desc"
+                },
+                take: 1,
+                select: {
+                    fileKey: true,
+                }
+            });
+
+            if (!file) {
+                throw new TRPCError({
+                    code: "BAD_REQUEST"
+                });
+            }
+
+            const { fileKey } = file;
+
+            const getObjectCmd = new GetObjectCommand({
+                Bucket: env.S3_PLUGIN_BUCKET,
+                Key: fileKey,
+            });
+
+            const url = await getSignedUrl(s3Client, getObjectCmd, {
+                expiresIn: 15 * 60,
+            });
+
+            return {
+                url,
+            }
         }
     })
