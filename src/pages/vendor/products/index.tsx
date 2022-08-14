@@ -81,7 +81,7 @@ const ProductsManage: NextPage = () => {
                                                             </div>
                                                         </td>
                                                         <td className="whitespace-nowrap px-3 py-4 text-sm text-neutral-400">
-                                                            <div className="text-neutral-200">{(product.price / 100)}</div>
+                                                            <div className="text-neutral-200">${(product.price / 100).toFixed(2)}</div>
                                                         </td>
                                                         <td className="whitespace-nowrap px-3 py-4 text-sm text-neutral-400">
                                                             <StatusBadge status={product.status} />

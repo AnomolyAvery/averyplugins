@@ -40,7 +40,7 @@ const Home: NextPage = () => {
             <div className="absolute inset-0">
               <img
                 className="h-full w-full object-cover"
-                src="https://static.vecteezy.com/system/resources/previews/001/907/544/original/flat-design-background-with-abstract-pattern-free-vector.jpg"
+                src="https://cdn.cloudflare.steamstatic.com/steam/apps/304930/ss_2754a9cdb632e6ed242799e073711fe6306a4245.jpg"
                 alt="People working on laptops"
               />
               <div className="absolute inset-0 bg-neutral-700 mix-blend-multiply" />

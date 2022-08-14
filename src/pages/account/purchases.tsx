@@ -1,17 +1,11 @@
+import { useState } from "react";
+import { FaKey } from "react-icons/fa";
+import PurchaseStatus from "../../components/vendor/PurchaseStatus";
+import { trpc } from "../../utils/trpc";
+
 const Purchases = () => {
 
-    const people = [
-        {
-            name: 'VaultPlugin',
-            title: 'Front-end Developer',
-            department: 'Optimization',
-            email: 'The Vault Plugin allows you to create enderchest-like cloud storages in Unturned.',
-            role: 'Member',
-            image:
-                'https://api.imperialplugins.com/v2/Products/1/ProductLogo?Size=Large'
-        },
-        // More people...
-    ]
+    const { data: purchases } = trpc.useQuery(['account.getPurchases']);
 
     return (
         <>
@@ -32,48 +26,40 @@ const Purchases = () => {
                                     <thead className="bg-neutral-900">
                                         <tr>
                                             <th scope="col" className="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-neutral-200 sm:pl-6">
-                                                Name
+                                                Product
                                             </th>
                                             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-neutral-200">
-                                                Title
+                                                Developer
                                             </th>
                                             <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-neutral-200">
                                                 Status
                                             </th>
-                                            <th scope="col" className="px-3 py-3.5 text-left text-sm font-semibold text-neutral-200">
-                                                Role
-                                            </th>
                                             <th scope="col" className="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                                                <span className="sr-only">Edit</span>
+                                                <span className="sr-only">License Key</span>
                                             </th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-200 bg-neutral-900/50">
-                                        {people.map((person) => (
-                                            <tr key={person.email}>
+                                        {purchases?.map((purchase) => (
+                                            <tr key={purchase.id}>
                                                 <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
                                                     <div className="flex items-center">
                                                         <div className="h-10 w-10 flex-shrink-0">
-                                                            <img className="h-10 w-10 rounded-full" src={person.image} alt="" />
+                                                            <img className="h-10 w-10 rounded-full" src={purchase.product.icon ?? ''} alt="" />
                                                         </div>
                                                         <div className="ml-4">
-                                                            <div className="font-medium text-neutral-200">{person.name}</div>
+                                                            <div className="font-medium text-neutral-200">{purchase.product.name}</div>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                    <div className="text-neutral-200">{person.title}</div>
+                                                    <div className="text-neutral-200">{purchase.product.owner.name}</div>
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                                    <span className="inline-flex rounded-full bg-green-100 px-2 text-xs font-semibold leading-5 text-green-800">
-                                                        Active
-                                                    </span>
+                                                    <PurchaseStatus status={purchase.status} />
                                                 </td>
-                                                <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{person.role}</td>
                                                 <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                                    <a href="#" className="text-indigo-600 hover:text-indigo-900">
-                                                        View Key<span className="sr-only">, {person.name}</span>
-                                                    </a>
+                                                    <LicenseKey licenseKey={purchase.id} />
                                                 </td>
                                             </tr>
                                         ))}
@@ -87,5 +73,31 @@ const Purchases = () => {
         </>
     )
 };
+
+type LicenseKeyProps = {
+    licenseKey: string;
+}
+
+const LicenseKey: React.FC<LicenseKeyProps> = ({ licenseKey }) => {
+    const [show, updateShow] = useState(false);
+
+    return (
+        <>
+            {show ? (
+                <input
+                    className="bg-neutral-900 shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-neutral-600 rounded-md"
+
+
+                    type="text" value={licenseKey} readOnly />
+
+            ) : (
+                <button onClick={() => updateShow(true)}>
+                    <span className="sr-only">Show license key</span>
+                    <FaKey />
+                </button>
+            )}
+        </>
+    )
+}
 
 export default Purchases;
