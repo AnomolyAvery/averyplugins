@@ -83,21 +83,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
             // https://averyplugins.us-southeast-1.linodeobjects.com/plugins/${productId}/icon.${fileExt}
             // Get the file extension from the previous icon
-            const previousFileExt = product.icon.split(".").pop();
 
+            const key = product.icon.replace('https://averyplugins.us-southeast-1.linodeobjects.com/', '').trim();
 
             const deleteCmd = new DeleteObjectCommand({
                 Bucket: env.S3_PLUGIN_BUCKET,
-                Key: `plugins/${product.id}/icon.${previousFileExt}`,
+                Key: key,
             });
 
             await s3Client.send(deleteCmd);
         }
 
+        const iconKey = `plugins/${product.id}/icon/${product.id}_${Date.now()}.${fileExt}`;
+
 
         const putObjectCmd = new PutObjectCommand({
             Bucket: env.S3_PLUGIN_BUCKET,
-            Key: `plugins/${productId}/icon.${fileExt}`,
+            Key: iconKey,
             Body: stream,
             ACL: "public-read"
         });
@@ -107,9 +109,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 id: productId,
             },
             data: {
-                icon: `https://averyplugins.us-southeast-1.linodeobjects.com/plugins/${productId}/icon.${fileExt}`,
+                icon: `https://averyplugins.us-southeast-1.linodeobjects.com/${iconKey}`,
             }
-        })
+        });
 
         await s3Client.send(putObjectCmd);
         res.status(200).end();

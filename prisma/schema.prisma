@@ -22,11 +22,21 @@ model Vendor {
     userId String
 }
 
+enum ProductFileStatus {
+    Draft
+    Released
+}
+
 model ProductFile {
-    id      String @id @default(cuid())
+    id String @id @default(cuid())
+
     name    String
-    version String
-    fileKey String
+    message String            @db.Text()
+    version String            @unique
+    fileKey String            @unique
+    status  ProductFileStatus @default(Draft)
+
+    downloads Int @default(0)
 
     product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
     productId String
@@ -74,7 +84,7 @@ enum ProductStatus {
 model Product {
     id          String         @id @default(cuid())
     name        String
-    icon        String?        @db.VarChar(255)
+    icon        String?        @unique @db.VarChar(255)
     overview    String
     price       Int            @default(0)
     description String         @db.Text

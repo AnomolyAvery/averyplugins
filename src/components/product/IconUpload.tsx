@@ -51,7 +51,6 @@ const IconUpload: React.FC<Props> = ({ productId, currentIcon }) => {
 
             const iconUploadUrl = `/api/products/icon-upload?productId=${productId}`;
             const formData = new FormData();
-            formData.append("productId", productId);
             formData.append("icon", icon);
 
             updateIsUploading(true);
@@ -60,6 +59,7 @@ const IconUpload: React.FC<Props> = ({ productId, currentIcon }) => {
                 method: "POST",
                 body: formData,
             });
+
             updateIsUploading(false);
 
             if (response.ok) {

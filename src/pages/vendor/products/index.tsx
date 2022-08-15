@@ -92,6 +92,11 @@ const ProductsManage: NextPage = () => {
                                                                     Edit<span className="sr-only">, {product.name}</span>
                                                                 </a>
                                                             </Link>
+                                                            <Link href={`/vendor/products/${product.id}/files`}>
+                                                                <a className="ml-2 text-blue-600 hover:text-blue-900">
+                                                                    Files<span className="sr-only">, {product.name}</span>
+                                                                </a>
+                                                            </Link>
                                                         </td>
                                                     </tr>
                                                 ))}

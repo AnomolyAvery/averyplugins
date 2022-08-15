@@ -214,6 +214,84 @@ export const vendorRouter = createProtectedRouter()
             return updatedProduct;
         }
     })
+    .query('getProductVersions', {
+        input: z.object({
+            id: z.string().min(1),
+        }),
+        async resolve({ ctx, input }) {
+            const { id } = input;
+
+            const versions = await ctx.prisma.productFile.findMany({
+                where: {
+                    productId: id,
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    version: true,
+                    downloads: true,
+                    createdAt: true,
+                    status: true,
+                    message: true,
+                }
+            });
+
+            return versions;
+        }
+    })
+    .mutation('updateProductVersion', {
+        input: z.object({
+            id: z.string().min(1),
+            name: z.string().min(3),
+            version: z.string().min(1),
+            message: z.string().min(10),
+        }),
+        async resolve({ ctx, input }) {
+            const { id } = input;
+
+            const userId = ctx.session.user.id;
+
+            const product = await ctx.prisma.product.findFirst({
+                where: {
+                    files: {
+                        some: {
+                            id,
+                        }
+                    }
+                }
+            });
+
+            if (!product) {
+                throw new TRPCError({
+                    code: "NOT_FOUND"
+                });
+            }
+
+            if (product.ownerId !== userId) {
+                throw new TRPCError({
+                    code: "UNAUTHORIZED"
+                });
+            }
+
+            const { name, version, message } = input;
+
+            const updatedFile = await ctx.prisma.productFile.update({
+                where: {
+                    id: id,
+                },
+                data: {
+                    name,
+                    version,
+                    message,
+                },
+                select: {
+                    id: true,
+                }
+            });
+
+            return updatedFile;
+        }
+    })
     .query('getPurchases', {
         input: z.object({
             limit: z.number().min(1).max(100).nullish(),
