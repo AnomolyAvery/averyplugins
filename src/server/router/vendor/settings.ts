@@ -31,6 +31,34 @@ export const vendorSettingsRouter = createProtectedRouter()
             return settings;
         }
     })
+    .mutation('create', {
+        input: z.object({
+            paypalEmail: z.string().min(1),
+            discordWebhook: z.string().min(1).nullish(),
+        }),
+        async resolve({ ctx, input }) {
+            const userId = ctx.session.user.id;
+
+            const { paypalEmail, discordWebhook } = input;
+
+            const settings = await ctx.prisma.vendor.create({
+                data: {
+                    user: {
+                        connect: {
+                            id: userId,
+                        }
+                    },
+                    paypalEmail: paypalEmail,
+                    discordWebhook: discordWebhook ? discordWebhook : undefined,
+                },
+                select: {
+                    id: true,
+                }
+            });
+
+            return settings;
+        }
+    })
     .mutation('update', {
         input: z.object({
             paypalEmail: z.string().min(1),

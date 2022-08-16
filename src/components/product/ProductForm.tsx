@@ -117,6 +117,7 @@ const ProductForm: React.FC<Props> = ({
         if (newProduct) {
             const { id } = await createProductAsync(product);
             toast.success('Product created');
+            onSaveSuccess();
 
             router.push(`/vendor/products/${id}`);
         }
