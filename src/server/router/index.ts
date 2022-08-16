@@ -3,7 +3,7 @@ import { createRouter } from "./context";
 import superjson from "superjson";
 import { productsRouter } from "./products";
 import { checkoutRouter } from "./checkout";
-import { vendorRouter } from "./vendor";
+import { vendorRouter } from "./vendor/vendor";
 import { accountRouter } from "./account";
 
 export const appRouter = createRouter()

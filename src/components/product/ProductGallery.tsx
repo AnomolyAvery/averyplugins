@@ -229,7 +229,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
     const cancelButtonRef = useRef(null);
 
 
-    const { mutateAsync: deleteImageAsync } = trpc.useMutation(['vendor.deleteProductImage']);
+    const { mutateAsync: deleteImageAsync } = trpc.useMutation(['vendor.products.images.delete']);
 
     const onDelete = async () => {
         try {

@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -9,12 +10,15 @@ import { trpc } from "../../../../utils/trpc";
 const VendorProduct = () => {
 
     const router = useRouter();
+    const { status: authStatus, data } = useSession();
 
     const id = router.query.id as string;
 
-    const { data: product, status, refetch } = trpc.useQuery(['vendor.getProduct', {
+    const { data: product, status, refetch } = trpc.useQuery(['vendor.products.get', {
         id,
-    }]);
+    }], {
+        enabled: authStatus === "authenticated" && data.user?.role === "vendor"
+    });
 
     return (
         <VendorLayout>

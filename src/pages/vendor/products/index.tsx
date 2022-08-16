@@ -16,7 +16,7 @@ const ProductsManage: NextPage = () => {
         isFetchingNextPage,
 
         status,
-    } = trpc.useInfiniteQuery(['vendor.getProducts', {
+    } = trpc.useInfiniteQuery(['vendor.products.getAll', {
         limit: 5,
     }], {
         getNextPageParam: (lastPage) => lastPage.nextCursor,

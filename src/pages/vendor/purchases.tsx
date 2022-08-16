@@ -3,13 +3,17 @@ import Link from "next/link";
 import { Fragment } from "react";
 import VendorLayout from "../../components/vendor/VendorLayout";
 import { trpc } from "../../utils/trpc";
+import { useSession } from "next-auth/react";
 
 const VendorPurchases = () => {
 
-    const { data: purchases, status } = trpc.useInfiniteQuery(['vendor.getPurchases', {
+    const { status: authStatus, data } = useSession();
+
+    const { data: purchases, status } = trpc.useInfiniteQuery(['vendor.purchases.getAll', {
         limit: 5,
     }], {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
+        enabled: authStatus === "authenticated" && data.user?.role === "vendor"
     })
 
     return (

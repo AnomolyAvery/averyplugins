@@ -46,8 +46,8 @@ const ProductForm: React.FC<Props> = ({
     const router = useRouter();
 
 
-    const { mutateAsync: createProductAsync } = trpc.useMutation(['vendor.createProduct']);
-    const { mutateAsync: updateProductAsync } = trpc.useMutation(['vendor.updateProduct']);
+    const { mutateAsync: createProductAsync } = trpc.useMutation(['vendor.products.create']);
+    const { mutateAsync: updateProductAsync } = trpc.useMutation(['vendor.products.update']);
 
     const [n, updateName] = useState(name);
     const [p, updatePrice] = useState(price);

@@ -14,7 +14,7 @@ const ProductFiles = () => {
 
     const id = router.query.id as string;
 
-    const { data: files, refetch } = trpc.useQuery(['vendor.getProductVersions', {
+    const { data: files, refetch } = trpc.useQuery(['vendor.products.files.getAll', {
         id,
     }]);
 
@@ -137,7 +137,7 @@ const FileModal: React.FC<FileModalProps> = ({
 
     const [isUploading, updateIsUploading] = useState(false);
 
-    const { mutateAsync: updateVersionAsync } = trpc.useMutation(['vendor.updateProductVersion']);
+    const { mutateAsync: updateVersionAsync } = trpc.useMutation(['vendor.products.files.update']);
 
     const handleClose = (
         updatedId?: string

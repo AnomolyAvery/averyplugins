@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
@@ -8,9 +9,13 @@ const VendorSettings = () => {
 
     const router = useRouter();
 
-    const { data: settings } = trpc.useQuery(['vendor.getSettings']);
+    const { status, data } = useSession();
 
-    const { mutateAsync: updateSettingsAsync } = trpc.useMutation(['vendor.updateSettings']);
+    const { data: settings } = trpc.useQuery(['vendor.settings.get'], {
+        enabled: status === "authenticated" && data.user?.role === "vendor"
+    });
+
+    const { mutateAsync: updateSettingsAsync } = trpc.useMutation(['vendor.settings.update']);
 
     useEffect(() => {
         if (settings) {
