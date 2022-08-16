@@ -119,7 +119,7 @@ const Product: NextPage = () => {
                     </div>
 
                     {/* Reviews */}
-                    <div className="mt-3">
+                    {/* <div className="mt-3">
                         <h3 className="sr-only">Reviews</h3>
                         <div className="flex items-center">
                             <div className="flex items-center">
@@ -136,7 +136,7 @@ const Product: NextPage = () => {
                             </div>
                             <p className="sr-only">{4} out of 5 stars</p>
                         </div>
-                    </div>
+                    </div> */}
 
                     <div className="mt-6">
                         <div className="flex gap-3 items-center">
@@ -169,7 +169,6 @@ const Product: NextPage = () => {
                             dangerouslySetInnerHTML={{ __html: product?.description ?? '' }}
                         />
                     </div>
-
                 </div>
             </div>
         </>

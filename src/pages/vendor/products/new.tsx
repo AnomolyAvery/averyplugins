@@ -6,7 +6,7 @@ const NewProduct = () => {
     return (
         <VendorLayout>
             <div className="p-6 bg-neutral-900/50 rounded-lg">
-                <ProductForm newProduct={true} />
+                <ProductForm newProduct={true} onSaveSuccess={() => { }} />
             </div>
         </VendorLayout>
     )

@@ -25,6 +25,7 @@ type Props = {
     overview?: string;
     description?: string;
     newProduct?: boolean;
+    onSaveSuccess: () => void;
 }
 
 const ProductForm: React.FC<Props> = ({
@@ -35,11 +36,10 @@ const ProductForm: React.FC<Props> = ({
     overview = "",
     description = "",
     newProduct = false,
+    onSaveSuccess
 }) => {
 
-    const [desc, updateDesc] = useState(
-        converter.makeMarkdown(description)
-    );
+
 
     const [selectedTab, setSelectedTab] = useState<"write" | "preview">("write");
 
@@ -52,6 +52,10 @@ const ProductForm: React.FC<Props> = ({
     const [n, updateName] = useState(name);
     const [p, updatePrice] = useState(price);
     const [o, updateOverview] = useState(overview);
+
+    const [desc, updateDesc] = useState(
+        converter.makeMarkdown(description)
+    );
 
 
     const [errors, updateErrors] = useState<{
@@ -107,7 +111,7 @@ const ProductForm: React.FC<Props> = ({
             name: n,
             price: p,
             overview: o,
-            description: desc,
+            description: converter.makeHtml(desc),
         };
 
         if (newProduct) {
@@ -122,6 +126,7 @@ const ProductForm: React.FC<Props> = ({
                 id: router.query.id as string,
             });
             toast.success('Product updated');
+            onSaveSuccess();
         }
     };
 

@@ -4,7 +4,7 @@ import { createProtectedRouter } from "./protected-router";
 import * as Showdown from 'showdown';
 import { s3Client } from "../lib/s3";
 import { env } from "../../env/server.mjs";
-import { PutObjectAclCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectAclCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const converter = new Showdown.Converter({
@@ -175,7 +175,6 @@ export const vendorRouter = createProtectedRouter()
                         }
                     },
                     status: "Draft",
-                    icon: "http://via.placeholder.com/640x360",
                 },
                 select: {
                     id: true,
@@ -318,6 +317,69 @@ export const vendorRouter = createProtectedRouter()
             return updatedFile;
         }
     })
+    .mutation('deleteProductImage', {
+        input: z.object({
+            id: z.string().min(1),
+        }),
+        async resolve({ ctx, input }) {
+            const userId = ctx.session.user.id;
+
+            const { id } = input;
+
+            const image = await ctx.prisma.productImage.findFirst({
+                where: {
+                    id: id,
+                },
+                select: {
+                    product: {
+                        select: {
+                            ownerId: true,
+                        }
+                    },
+                    url: true,
+                }
+            });
+
+            if (!image) {
+                throw new TRPCError({
+                    code: "NOT_FOUND"
+                });
+            }
+
+            if (image.product.ownerId !== userId) {
+                throw new TRPCError({
+                    code: "UNAUTHORIZED"
+                });
+            }
+
+            const fileKey = image?.url.replace('https://averyplugins.us-southeast-1.linodeobjects.com/', '').trim();
+            console.log(fileKey);
+            try {
+                const deleteObjCmd = new DeleteObjectCommand({
+                    Bucket: env.S3_PLUGIN_BUCKET,
+                    Key: fileKey,
+                });
+
+                await s3Client.send(deleteObjCmd);
+
+                const deletedFile = await ctx.prisma.productFile.delete({
+                    where: {
+                        id,
+                    },
+                    select: {
+                        id: true,
+                    }
+                });
+
+                return deletedFile;
+            }
+            catch (err) {
+                throw new TRPCError({
+                    code: "INTERNAL_SERVER_ERROR"
+                });
+            }
+        }
+    })
     .query('getPurchases', {
         input: z.object({
             limit: z.number().min(1).max(100).nullish(),
@@ -387,8 +449,63 @@ export const vendorRouter = createProtectedRouter()
                     userId,
                 },
                 select: {
-
+                    paypalEmail: true,
+                    discordWebhook: true,
+                    user: {
+                        select: {
+                            joinedAt: true,
+                        }
+                    }
                 }
             });
+
+            if (!settings) {
+                throw new TRPCError({
+                    code: "NOT_FOUND"
+                });
+            }
+
+            return settings;
+        }
+    })
+    .mutation('updateSettings', {
+        input: z.object({
+            paypalEmail: z.string().min(1),
+            discordWebhook: z.string().min(1).nullish(),
+        }),
+        async resolve({ ctx, input }) {
+            const userId = ctx.session.user.id;
+
+            const { paypalEmail, discordWebhook } = input;
+
+            const settings = await ctx.prisma.vendor.findFirst({
+                where: {
+                    userId,
+                },
+                select: {
+                    id: true,
+                }
+            });
+
+            if (!settings) {
+                throw new TRPCError({
+                    code: "NOT_FOUND"
+                });
+            }
+
+            const updatedSettings = await ctx.prisma.vendor.update({
+                where: {
+                    id: settings.id,
+                },
+                data: {
+                    paypalEmail,
+                    discordWebhook: discordWebhook ?? undefined
+                },
+                select: {
+                    id: true,
+                }
+            });
+
+            return updatedSettings;
         }
     })

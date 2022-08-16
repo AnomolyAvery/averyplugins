@@ -12,7 +12,7 @@ const VendorProduct = () => {
 
     const id = router.query.id as string;
 
-    const { data: product, status } = trpc.useQuery(['vendor.getProduct', {
+    const { data: product, status, refetch } = trpc.useQuery(['vendor.getProduct', {
         id,
     }]);
 
@@ -28,6 +28,7 @@ const VendorProduct = () => {
                         newProduct={false}
                         id={product.id}
                         icon={product.icon ?? undefined}
+                        onSaveSuccess={() => refetch()}
                     />
                 </>
             )}
