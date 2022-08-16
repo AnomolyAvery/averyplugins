@@ -22,12 +22,9 @@ const ProductFiles = () => {
     const [displayUpdateDialog, setDisplayUpdateDialog] = useState(false);
 
     const onFileModalClose = (updatedId?: string) => {
-        if (updatedId) {
-            updatedSelectedFile(null);
-
-        }
         setDisplayCreateDialog(false);
         setDisplayUpdateDialog(false);
+        updatedSelectedFile(null);
         refetch();
     };
 
@@ -65,7 +62,7 @@ const ProductFiles = () => {
                     {files?.map((file) => (
                         <li key={file.id}>
                             <div onClick={() => {
-                                updatedSelectedFile(file);
+                                updatedSelectedFile(f => f === file ? null : file);
                                 setDisplayUpdateDialog(true);
                             }} className="block hover:bg-neutral-900">
                                 <div className="px-4 py-4 sm:px-6">
@@ -102,7 +99,9 @@ const ProductFiles = () => {
 
             <FileModal isOpen={displayCreateDialog} onClose={onFileModalClose} productId={id} />
 
-            <FileModal isOpen={displayUpdateDialog} onClose={onFileModalClose} productId={id} savedFile={selectedFile ?? undefined} />
+            {selectedFile && (
+                <FileModal isOpen={displayUpdateDialog} onClose={onFileModalClose} productId={id} savedFile={selectedFile ? selectedFile : undefined} />
+            )}
 
         </VendorLayout>
     )
@@ -136,12 +135,13 @@ const FileModal: React.FC<FileModalProps> = ({
     const [fileVersion, updateFileVersion] = useState(savedFile ? savedFile.version : '');
     const [fileMessage, updateFileMessage] = useState(savedFile ? savedFile.message : '');
 
+    const [isUploading, updateIsUploading] = useState(false);
+
     const { mutateAsync: updateVersionAsync } = trpc.useMutation(['vendor.updateProductVersion']);
 
     const handleClose = (
         updatedId?: string
     ) => {
-
         updateFile(null);
         updateFileName('');
         updateFileVersion('');
@@ -199,6 +199,7 @@ const FileModal: React.FC<FileModalProps> = ({
         formData.append('product_file', file);
 
         if (savedFile) {
+            updateIsUploading(true);
             const resp = await fetch(`/api/products/file-upload?productId=${productId}&fileId=${savedFile.id}`, {
                 method: "PUT",
                 body: formData,
@@ -219,7 +220,8 @@ const FileModal: React.FC<FileModalProps> = ({
                     name: fileName,
                     version: fileVersion,
                     message: fileMessage,
-                })
+                });
+                updateIsUploading(false);
 
                 if (updatedFile.id) {
                     toast.success('File updated successfully');
@@ -234,6 +236,7 @@ const FileModal: React.FC<FileModalProps> = ({
             }
         }
         else {
+            updateIsUploading(true);
             const resp = await fetch(`/api/products/file-upload?productId=${productId}`, {
                 method: "POST",
                 body: formData,
@@ -255,6 +258,7 @@ const FileModal: React.FC<FileModalProps> = ({
                     message: fileMessage,
                     id: fileId,
                 });
+                updateIsUploading(false);
 
                 if (updatedFile.id) {
                     toast.success('File updated successfully');
@@ -390,10 +394,14 @@ const FileModal: React.FC<FileModalProps> = ({
                                 <div className="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
                                     <button
                                         type="button"
-                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-800 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm"
+                                        className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-800 text-base font-medium text-white hover:bg-green-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-75 disabled:hover:bg-green-800"
                                         onClick={onUpload}
+                                        disabled={!file || isUploading}
                                     >
-                                        Deactivate
+                                        {
+                                            isUploading ? 'Uploading' :
+                                                savedFile ? 'Update' : 'Create'
+                                        }
                                     </button>
                                     <button
                                         type="button"
