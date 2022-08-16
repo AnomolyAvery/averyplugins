@@ -1,10 +1,9 @@
 import React from 'react'
+import Spinner from './Spinner'
 
 const LoadingPreview: React.FC = () => {
     return (
-        <div className='text-center font-bold text-2xl'>
-            Loading...
-        </div>
+        <Spinner size="md" />
     )
 }
 

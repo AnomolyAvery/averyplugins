@@ -63,6 +63,8 @@ model Purchase {
     userId    String
     productId String
 
+    vendorPaidOn DateTime?
+
     @@unique([userId, productId])
 }
 

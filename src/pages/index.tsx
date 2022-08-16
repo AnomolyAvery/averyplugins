@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { useEffect, useState } from "react";
+import Spinner from "../components/shared/Spinner";
 
 const Home: NextPage = () => {
 
@@ -53,7 +54,6 @@ const Home: NextPage = () => {
             </div>
           </div>
         </div>
-
         {/*  */}
       </div>
 

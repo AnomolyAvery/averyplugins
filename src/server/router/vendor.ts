@@ -49,9 +49,35 @@ export const vendorRouter = createProtectedRouter()
                 }
             });
 
+
+            const purchases = await ctx.prisma.purchase.findMany({
+                where: {
+                    userId: ctx.session.user.id,
+                    vendorPaidOn: {
+                        equals: null,
+                    }
+                },
+                select: {
+                    product: {
+                        select: {
+                            price: true,
+                        }
+                    },
+                }
+            });
+
+            const amounts = purchases.map(p => (p.product.price / 100));
+
+            const total = amounts.reduce((a, b) => a + b, 0);
+
+            const fees = amounts.reduce((a, b) => a + (b * 0.029), 0);
+            const net = (total - fees).toFixed(2);
+
+
             return {
                 productCount,
                 customerCount,
+                balance: net,
             }
         }
     })
@@ -350,5 +376,19 @@ export const vendorRouter = createProtectedRouter()
                 purchases,
                 nextCursor,
             }
+        }
+    })
+    .query('getSettings', {
+        async resolve({ ctx }) {
+            const userId = ctx.session.user.id;
+
+            const settings = await ctx.prisma.vendor.findFirst({
+                where: {
+                    userId,
+                },
+                select: {
+
+                }
+            });
         }
     })

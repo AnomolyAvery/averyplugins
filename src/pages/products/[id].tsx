@@ -3,6 +3,7 @@ import { NextPage } from "next";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { IoShieldCheckmark } from "react-icons/io5";
 import classNames from "../../utils/classNames";
@@ -21,22 +22,32 @@ const Product: NextPage = () => {
     }]);
 
 
-    const { mutateAsync: getDownloadUrlAsync } = trpc.useMutation(['products.user.download']);
+    const { mutateAsync: getDownloadUrlAsync } = trpc.useMutation(['products.getDownloadUrl']);
+
+    const [isDownloading, updateIsDownloading] = useState(false);
 
     const handleDownload = async () => {
-        const { url } = await getDownloadUrlAsync({
-            productId: id,
-        });
+        if (!id) return;
 
-        console.log(url);
+        updateIsDownloading(true);
+        const { url } = await getDownloadUrlAsync({
+            id: id,
+        });
+        updateIsDownloading(false);
+
+        // Open the download url in a new tab
+        window.open(url, '_blank');
     }
 
 
     const buyNowOrDownload = product && product.purchases.length > 0 && product.purchases[0]?.status === "Paid" ? (
         <button
             onClick={handleDownload}
-            className="max-w-xs flex-1 bg-blue-800 rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-blue-700  sm:w-full"
-        >Download</button>
+            disabled={isDownloading}
+            className="max-w-xs flex-1 bg-blue-800 disabled:hover:bg-blue-800 disabled:opacity-75 rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-blue-700  sm:w-full"
+        >
+            {isDownloading ? 'Downloading...' : 'Download'}
+        </button>
     ) : (
         <Link href={`/checkout/${id}`}>
             <a

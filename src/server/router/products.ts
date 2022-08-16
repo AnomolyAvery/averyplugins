@@ -206,6 +206,8 @@ export const productsRouter = createRouter()
                 take: 1,
                 select: {
                     fileKey: true,
+                    id: true,
+                    downloads: true,
                 }
             });
 
@@ -224,6 +226,17 @@ export const productsRouter = createRouter()
 
             const url = await getSignedUrl(s3Client, getObjectCmd, {
                 expiresIn: 15 * 60,
+            });
+
+            await ctx.prisma.productFile.update({
+                where: {
+                    id: file.id,
+                },
+                data: {
+                    downloads: {
+                        set: file.downloads + 1,
+                    }
+                }
             });
 
             return {

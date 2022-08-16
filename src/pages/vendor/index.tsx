@@ -18,8 +18,8 @@ const Vendor = () => {
                         <dd className="mt-1 text-3xl font-semibold text-neutral-100">{stats?.customerCount}</dd>
                     </div>
                     <div className="px-4 py-5 bg-neutral-900/50 shadow rounded-lg overflow-hidden sm:p-6">
-                        <dt className="text-sm font-medium text-neutral-300 truncate">Open Tickets</dt>
-                        <dd className="mt-1 text-3xl font-semibold text-neutral-100">{0}</dd>
+                        <dt className="text-sm font-medium text-neutral-300 truncate">Balance</dt>
+                        <dd className="mt-1 text-3xl font-semibold text-neutral-100">${stats?.balance}</dd>
                     </div>
                 </dl>
             </div>
