@@ -91,7 +91,7 @@ const AppNav: React.FC = () => {
 
                                         {session.user.role === "admin" && (
                                             <NextLink
-                                                href='/admin'
+                                                href='/admin/users'
                                                 className="text-neutral-300 hover:text-neutral-100 inline-flex items-center px-1 pt-1 text-sm font-medium"
                                             >
                                                 Admin

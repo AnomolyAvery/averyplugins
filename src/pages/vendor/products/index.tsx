@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import Link from "next/link";
 import React from "react";
 import { StatusBadge } from "../../../components/product/StatusBadge";
-import VendorLayout from "../../../components/vendor/VendorLayout";
+import ManageLayout from "../../../components/shared/ManageLayout";
 import { trpc } from "../../../utils/trpc";
 
 const ProductsManage: NextPage = () => {
@@ -24,7 +24,7 @@ const ProductsManage: NextPage = () => {
 
 
     return (
-        <VendorLayout>
+        <ManageLayout role="vendor">
             <div>
                 <div className="sm:flex sm:items-center">
                     <div className="sm:flex-auto">
@@ -133,7 +133,7 @@ const ProductsManage: NextPage = () => {
                     </div>
                 </div>
             </div>
-        </VendorLayout>
+        </ManageLayout>
     )
 };
 

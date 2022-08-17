@@ -1,7 +1,7 @@
 import PurchaseStatus from "../../components/vendor/PurchaseStatus";
 import Link from "next/link";
 import { Fragment } from "react";
-import VendorLayout from "../../components/vendor/VendorLayout";
+import ManageLayout from "../../components/shared/ManageLayout";
 import { trpc } from "../../utils/trpc";
 import { useSession } from "next-auth/react";
 
@@ -17,7 +17,7 @@ const VendorPurchases = () => {
     })
 
     return (
-        <VendorLayout>
+        <ManageLayout role="vendor">
             <div>
                 <div className="sm:flex sm:items-center">
                     <div className="sm:flex-auto">
@@ -129,7 +129,7 @@ const VendorPurchases = () => {
                     </div>
                 </div>
             </div>
-        </VendorLayout>
+        </ManageLayout>
     )
 };
 

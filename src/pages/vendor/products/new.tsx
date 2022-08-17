@@ -1,14 +1,14 @@
 import ProductForm from "../../../components/product/ProductForm";
-import VendorLayout from "../../../components/vendor/VendorLayout";
+import ManageLayout from "../../../components/shared/ManageLayout";
 
 
 const NewProduct = () => {
     return (
-        <VendorLayout>
+        <ManageLayout role="vendor">
             <div className="p-6 bg-neutral-900/50 rounded-lg">
                 <ProductForm newProduct={true} onSaveSuccess={() => { }} />
             </div>
-        </VendorLayout>
+        </ManageLayout>
     )
 };
 

@@ -5,7 +5,7 @@ import { Fragment, useRef, useState } from 'react'
 import toast from "react-hot-toast";
 import { FaCalendar, FaCloudDownloadAlt, FaExclamation, FaFile, FaFileDownload, FaLocationArrow, FaUsers } from "react-icons/fa";
 import FileStatus from "../../../../components/product/FileStatus";
-import VendorLayout from "../../../../components/vendor/VendorLayout";
+import ManageLayout from "../../../../components/shared/ManageLayout";
 import { trpc } from "../../../../utils/trpc";
 
 const ProductFiles = () => {
@@ -42,7 +42,7 @@ const ProductFiles = () => {
 
 
     return (
-        <VendorLayout>
+        <ManageLayout role="vendor">
             <div className="mb-4 pb-5 border-b border-neutral-600 sm:flex sm:items-center sm:justify-between">
                 <h3 className="text-lg leading-6 font-medium text-neutral-200">Product Versions</h3>
                 <div className="mt-3 sm:mt-0 sm:ml-4">
@@ -103,7 +103,7 @@ const ProductFiles = () => {
                 <FileModal isOpen={displayUpdateDialog} onClose={onFileModalClose} productId={id} savedFile={selectedFile ? selectedFile : undefined} />
             )}
 
-        </VendorLayout>
+        </ManageLayout>
     )
 };
 

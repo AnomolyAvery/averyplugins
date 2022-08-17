@@ -2,7 +2,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import VendorLayout from "../../components/vendor/VendorLayout";
+import ManageLayout from "../../components/shared/ManageLayout";
 import { trpc } from "../../utils/trpc";
 
 const VendorSettings = () => {
@@ -95,7 +95,7 @@ const VendorSettings = () => {
     };
 
     return (
-        <VendorLayout>
+        <ManageLayout role="vendor">
             <div className="flex-1 xl:overflow-y-auto">
                 <div className="mx-auto px-4 sm:px-6 lg:px-8">
                     <form onSubmit={onSettingsSave} className="mt-6 space-y-8 divide-y divide-neutral-600">
@@ -170,7 +170,7 @@ const VendorSettings = () => {
                     </form>
                 </div>
             </div>
-        </VendorLayout>
+        </ManageLayout>
     )
 };
 

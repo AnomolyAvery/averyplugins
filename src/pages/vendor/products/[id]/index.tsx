@@ -4,7 +4,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import ProductForm from "../../../../components/product/ProductForm";
 import ProductGallery from "../../../../components/product/ProductGallery";
-import VendorLayout from "../../../../components/vendor/VendorLayout";
+import ManageLayout from "../../../../components/shared/ManageLayout";
 import { trpc } from "../../../../utils/trpc";
 
 const VendorProduct = () => {
@@ -23,7 +23,7 @@ const VendorProduct = () => {
 
 
     return (
-        <VendorLayout>
+        <ManageLayout role="vendor">
             {product && (
                 <>
                     <ProductForm
@@ -41,7 +41,7 @@ const VendorProduct = () => {
             )}
 
 
-        </VendorLayout>
+        </ManageLayout>
     )
 };
 

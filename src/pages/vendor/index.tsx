@@ -1,4 +1,4 @@
-import VendorLayout from "../../components/vendor/VendorLayout";
+import ManageLayout from "../../components/shared/ManageLayout";
 import { trpc } from "../../utils/trpc";
 
 const Vendor = () => {
@@ -6,7 +6,7 @@ const Vendor = () => {
     const { status, data: stats } = trpc.useQuery(['vendor.dashboard']);
 
     return (
-        <VendorLayout>
+        <ManageLayout role="vendor">
             <div>
                 <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
                     <div className="px-4 py-5 bg-neutral-900/50 shadow rounded-lg overflow-hidden sm:p-6">
@@ -23,7 +23,7 @@ const Vendor = () => {
                     </div>
                 </dl>
             </div>
-        </VendorLayout>
+        </ManageLayout>
     )
 };
 
