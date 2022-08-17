@@ -61,15 +61,11 @@ export const vendorRouter = createProtectedRouter()
                     }
                 },
                 select: {
-                    product: {
-                        select: {
-                            price: true,
-                        }
-                    },
+                    amount: true,
                 }
             });
 
-            const amounts = purchases.map(p => (p.product.price / 100));
+            const amounts = purchases.map(p => (p.amount / 100));
 
             const total = amounts.reduce((a, b) => a + b, 0);
 

@@ -55,6 +55,7 @@ model Purchase {
     id            String         @id @default(cuid())
     status        PurchaseStatus @default(Pending)
     paypalOrderId String
+    amount        Int            @default(0)
 
     createdAt DateTime @default(now())
 

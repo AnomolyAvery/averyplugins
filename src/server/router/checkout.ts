@@ -143,6 +143,7 @@ export const checkoutRouter = createProtectedRouter()
                             productId,
                             userId: ctx.session.user.id,
                             paypalOrderId: response.result.id,
+                            amount: product.price,
                         }
                     });
 

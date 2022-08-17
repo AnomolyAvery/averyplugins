@@ -55,6 +55,16 @@ export const adminUsersRouter = createProtectedRouter()
                 select: {
                     name: true,
                     image: true,
+                    products: {
+                        select: {
+                            id: true,
+                            name: true,
+                            icon: true,
+                            overview: true,
+                            status: true,
+                            price: true,
+                        }
+                    }
                 }
             });
 
