@@ -101,6 +101,12 @@ export const productsRouter = createRouter()
                 }
             });
 
+            if (!product) {
+                throw new TRPCError({
+                    code: "NOT_FOUND"
+                });
+            }
+
             return product;
         }
     })

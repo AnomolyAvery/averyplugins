@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { IoShieldCheckmark } from "react-icons/io5";
+import LoadingPreview from "../../components/shared/LoadingPreview";
 import classNames from "../../utils/classNames";
 import { trpc } from "../../utils/trpc";
 
@@ -17,14 +18,30 @@ const Product: NextPage = () => {
 
     const { status: authStatus, } = useSession();
 
-    const { data: product, status } = trpc.useQuery(['products.getProduct', {
-        id,
-    }]);
-
-
     const { mutateAsync: getDownloadUrlAsync } = trpc.useMutation(['products.getDownloadUrl']);
 
     const [isDownloading, updateIsDownloading] = useState(false);
+
+    const { data: product, status, error, isError } = trpc.useQuery(['products.getProduct', {
+        id,
+    }], {
+        retry: false,
+    });
+
+    if (status === "loading") {
+        return <LoadingPreview />;
+    }
+
+    if (status === "error") {
+        if (isError && error.data?.code === "NOT_FOUND") {
+            router.push('/products');
+        }
+
+        return <LoadingPreview />;
+    }
+
+
+
 
     const handleDownload = async () => {
         if (!id) return;
