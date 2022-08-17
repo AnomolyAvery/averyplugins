@@ -148,7 +148,7 @@ const AppNav: React.FC = () => {
                                 )}
 
                                 {status === "unauthenticated" && (
-                                    <button onClick={() => signIn('discord')} className='inline-flex items-center gap-2 px-4 py-1 rounded-lg bg-blue-800 hover:bg-blue-600'>
+                                    <button onClick={() => signIn('discord')} className='inline-flex items-center gap-2 px-4 py-1 rounded-lg bg-blue-900 hover:bg-blue-900/50 border border-blue-600'>
                                         <FaDiscord className='h-5 w-5' /> <span className='text-base font-medium'>Login</span>
                                     </button>
                                 )}

@@ -77,7 +77,7 @@ const Account: NextPage = () => {
                                     redirect: true,
                                     callbackUrl: '/'
                                 })}
-                                className="flex justify-center items-center px-4 py-2 border border-neutral-600 shadow-sm text-sm font-medium rounded-md text-neutral-300 bg-neutral-900 hover:bg-neutral-800"
+                                className="flex justify-center items-center px-4 py-2 border border-neutral-600 shadow-sm text-sm font-medium rounded-md text-neutral-300 bg-neutral-900 hover:bg-neutral-900/50"
                             >
                                 Sign out
                             </button>
