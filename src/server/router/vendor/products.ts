@@ -254,6 +254,102 @@ export const vendorProducsRouter = createProtectedRouter()
             }
         })
     )
+    .mutation('updateStatus', {
+        input: z.object({
+            id: z.string().min(1),
+            status: z.enum(['Draft', "UnderReview"])
+        }),
+        async resolve({ ctx, input }) {
+            const userId = ctx.session?.user?.id;
+            if (!userId) {
+                throw new TRPCError({
+                    code: "UNAUTHORIZED"
+                });
+            }
+
+            const { id, status } = input;
+
+            const product = await ctx.prisma.product.findUnique({
+                where: {
+                    id
+                },
+                select: {
+                    ownerId: true,
+                    icon: true,
+                    _count: {
+                        select: {
+                            files: true,
+                            images: true,
+                        }
+                    }
+                }
+            });
+
+            if (!product) {
+                throw new TRPCError({
+                    code: "NOT_FOUND"
+                });
+            }
+
+            if (product.ownerId !== userId) {
+                throw new TRPCError({
+                    code: "UNAUTHORIZED"
+                });
+            }
+
+            if (status === "UnderReview") {
+                if (product._count.files < 1) {
+                    throw new TRPCError({
+                        code: "BAD_REQUEST",
+                        message: "Product must have at least one file."
+                    })
+                }
+
+                if (product._count.images < 1) {
+                    throw new TRPCError({
+                        code: "BAD_REQUEST",
+                        message: "Product must have at least one image."
+                    })
+                }
+
+                if (product.icon === null) {
+                    throw new TRPCError({
+                        code: "BAD_REQUEST",
+                        message: "Product must have an icon."
+                    })
+                }
+
+                const updatedProduct = await ctx.prisma.product.update({
+                    where: {
+                        id,
+                    },
+                    data: {
+                        status
+                    },
+                    select: {
+                        id: true,
+                    }
+                });
+
+                return updatedProduct;
+            }
+            else {
+                const updatedProduct = await ctx.prisma.product.update({
+                    where: {
+                        id,
+                    },
+                    data: {
+                        status,
+                    },
+                    select: {
+                        id: true,
+                    }
+                });
+
+                return updatedProduct;
+            }
+        }
+    })
     .merge('images.', createProtectedRouter()
         .mutation('delete', {
             input: z.object({

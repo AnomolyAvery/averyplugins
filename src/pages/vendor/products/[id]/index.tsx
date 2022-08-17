@@ -20,6 +20,8 @@ const VendorProduct = () => {
         enabled: authStatus === "authenticated" && data.user?.role === "vendor"
     });
 
+
+
     return (
         <VendorLayout>
             {product && (
@@ -32,6 +34,7 @@ const VendorProduct = () => {
                         newProduct={false}
                         id={product.id}
                         icon={product.icon ?? undefined}
+                        status={product.status ?? undefined}
                         onSaveSuccess={() => refetch()}
                     />
                 </>

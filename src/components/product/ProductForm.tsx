@@ -1,13 +1,18 @@
-import { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 import ReactMde from "react-mde";
 import * as Showdown from "showdown";
 import "react-mde/lib/styles/css/react-mde-all.css";
 import { useRouter } from 'next/router';
-import { trpc } from '../../utils/trpc';
+import { ClientError, trpc } from '../../utils/trpc';
 import toast from 'react-hot-toast';
 import IconUpload from './IconUpload';
 import ProductGallery from './ProductGallery';
+import { Listbox, Transition } from '@headlessui/react';
+import { FaCheck, FaChevronDown } from 'react-icons/fa';
+import classNames from '../../utils/classNames';
+import type { ProductStatus } from '@prisma/client';
+import { TRPCClientError } from '@trpc/client';
 
 
 const converter = new Showdown.Converter({
@@ -25,6 +30,7 @@ type Props = {
     overview?: string;
     description?: string;
     newProduct?: boolean;
+    status?: ProductStatus;
     onSaveSuccess: () => void;
 }
 
@@ -36,7 +42,8 @@ const ProductForm: React.FC<Props> = ({
     overview = "",
     description = "",
     newProduct = false,
-    onSaveSuccess
+    onSaveSuccess,
+    status,
 }) => {
 
 
@@ -135,13 +142,20 @@ const ProductForm: React.FC<Props> = ({
         <form onSubmit={onSubmit} className="space-y-8 divide-y divide-neutral-600">
             <div className="space-y-8 divide-y divide-neutral-600">
                 <div>
-                    <div>
-                        <h3 className="text-lg leading-6 font-medium text-neutral-200">
-                            {newProduct ? "Create Product" : "Edit Product"}
-                        </h3>
-                        <p className="mt-1 text-sm text-neutral-400">
-                            This information will be displayed publicly so be careful what you share.
-                        </p>
+                    <div className='pb-5 border-b border-gray-200 sm:flex sm:items-center sm:justify-between'>
+                        <div>
+                            <h3 className="text-lg leading-6 font-medium text-neutral-200">
+                                {newProduct ? "Create Product" : "Edit Product"}
+                            </h3>
+                            <p className="mt-1 text-sm text-neutral-400">
+                                This information will be displayed publicly so be careful what you share.
+                            </p>
+                        </div>
+                        {!newProduct && id && status && (
+                            <div>
+                                <StatusSelect status={status} productId={id} />
+                            </div>
+                        )}
                     </div>
 
                     <div className="mt-6 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
@@ -263,5 +277,129 @@ const ProductForm: React.FC<Props> = ({
         </form>
     )
 }
+
+type StatusSelectProps = {
+    productId: string;
+    status: ProductStatus;
+}
+
+const StatusSelect: React.FC<StatusSelectProps> = ({
+    productId,
+    status,
+}) => {
+
+    const publishingOptions = [
+        { title: "Under Review", description: 'Admins will review the product.', current: true },
+        { title: "Draft", description: 'Only you can see the product', current: false },
+    ];
+
+    type PubOption = typeof publishingOptions[number];
+
+    const [selected, updateSelected] = useState<PubOption | null>(publishingOptions[1] ?? null);
+
+    const { mutateAsync: updateStatusAsync, error } = trpc.useMutation(['vendor.products.updateStatus']);
+
+    const onChange = async (option: PubOption) => {
+        updateSelected(option);
+
+        try {
+            if (option.title === 'Under Review') {
+                const { id } = await updateStatusAsync({
+                    id: productId,
+                    status: "UnderReview"
+                });
+
+                if (id) {
+                    toast.success('Product under review.');
+                }
+            }
+            else {
+                const { id } = await updateStatusAsync({
+                    id: productId,
+                    status: "Draft"
+                });
+                if (id) {
+                    toast.success("Product saved as draft.");
+                }
+            }
+        }
+        catch (err: ClientError | any) {
+
+            const message = (err as ClientError).message;
+
+            if (message) {
+                toast.error(message);
+                const draft = publishingOptions.find(o => o.title === 'Draft');
+                updateSelected(draft ?? null);
+            }
+        }
+
+
+    };
+
+
+    return (
+        <Listbox value={selected} onChange={onChange}>
+            {({ open }) => (
+                <>
+                    <Listbox.Label className="sr-only">Change published status</Listbox.Label>
+                    <div className="relative">
+                        <div className="inline-flex shadow-sm rounded-md divide-x divide-blue-600">
+                            <div className="relative z-0 inline-flex shadow-sm rounded-md divide-x divide-blue-600">
+                                <div className="relative inline-flex items-center bg-blue-800 py-2 pl-3 pr-4 border border-transparent rounded-l-md shadow-sm text-white">
+                                    <FaCheck className="h-5 w-5" aria-hidden="true" />
+                                    <p className="ml-2.5 text-sm font-medium">{selected?.title}</p>
+                                </div>
+                                <Listbox.Button className="relative inline-flex items-center bg-blue-800 p-2 rounded-l-none rounded-r-md text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:z-10">
+                                    <span className="sr-only">Change published status</span>
+                                    <FaChevronDown className="h-5 w-5 text-white" aria-hidden="true" />
+                                </Listbox.Button>
+                            </div>
+                        </div>
+
+                        <Transition
+                            show={open}
+                            as={Fragment}
+                            leave="transition ease-in duration-100"
+                            leaveFrom="opacity-100"
+                            leaveTo="opacity-0"
+                        >
+                            <Listbox.Options className="origin-top-right absolute z-10 right-0 mt-2 w-72 rounded-md shadow-lg overflow-hidden bg-neutral-900 divide-y divide-neutral-600 ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                {publishingOptions.map((option) => (
+                                    <Listbox.Option
+                                        key={option.title}
+                                        className={({ active }) =>
+                                            classNames(
+                                                active ? 'text-white bg-blue-800' : 'text-neutral-200',
+                                                'cursor-default select-none relative p-4 text-sm'
+                                            )
+                                        }
+                                        value={option}
+                                    >
+                                        {({ selected, active }) => (
+                                            <div className="flex flex-col">
+                                                <div className="flex justify-between">
+                                                    <p className={selected ? 'font-semibold' : 'font-normal'}>{option.title}</p>
+                                                    {selected ? (
+                                                        <span className={active ? 'text-white' : 'text-blue-500'}>
+                                                            <FaCheck className="h-5 w-5" aria-hidden="true" />
+                                                        </span>
+                                                    ) : null}
+                                                </div>
+                                                <p className={classNames(active ? 'text-blue-200' : 'text-neutral-400', 'mt-2')}>
+                                                    {option.description}
+                                                </p>
+                                            </div>
+                                        )}
+                                    </Listbox.Option>
+                                ))}
+                            </Listbox.Options>
+                        </Transition>
+                    </div>
+                </>
+            )}
+        </Listbox>
+    )
+};
 
 export default ProductForm
