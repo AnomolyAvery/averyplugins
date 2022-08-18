@@ -76,11 +76,11 @@ const ProductFiles = () => {
                                         <div className="sm:flex">
                                             <p className="flex items-center text-sm text-gray-500">
                                                 <FaCloudDownloadAlt className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                1.0.0
+                                                {file.version}
                                             </p>
                                             <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
                                                 <FaFileDownload className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" aria-hidden="true" />
-                                                0
+                                                {file.downloads}
                                             </p>
                                         </div>
                                         <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
