@@ -56,6 +56,7 @@ export const vendorRouter = createProtectedRouter()
             const purchases = await ctx.prisma.purchase.findMany({
                 where: {
                     userId: ctx.session.user.id,
+                    status: "Paid",
                     vendorPaidOn: {
                         equals: null,
                     }
