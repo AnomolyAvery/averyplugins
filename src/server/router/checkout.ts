@@ -7,7 +7,7 @@ import { createProtectedRouter } from "./protected-router";
 export const checkoutRouter = createProtectedRouter()
     .query('getCheckout', {
         input: z.object({
-            id: z.string().min(1)
+            id: z.string().min(1),
         }),
         async resolve({ ctx, input }) {
             const { id } = input;
@@ -55,11 +55,10 @@ export const checkoutRouter = createProtectedRouter()
                 });
             }
 
-
             return {
                 product,
                 total: product.price,
-            };
+            }
         }
     })
     .merge('paypal.',

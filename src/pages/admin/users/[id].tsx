@@ -14,20 +14,26 @@ const UserView = () => {
 
     const id = router.query.id as string;
 
-    const { data: user, status } = trpc.useQuery(['admin.users.get', {
+    const { data: userData, status } = trpc.useQuery(['admin.users.get', {
         id,
     }]);
-
 
     if (status === "loading") {
         return <LoadingPreview />;
     }
 
     const copyIdToCopyboard = () => {
-        navigator.clipboard.writeText(id);
-        toast.success("ID copied to clipboard", {
-            className: "bg-neutral-900"
-        });
+        if (userData?.discordId) {
+            navigator.clipboard.writeText(userData?.discordId);
+            toast.success("ID copied to clipboard", {
+                className: "bg-neutral-900"
+            });
+        }
+        else {
+            toast.error("No ID found", {
+                className: "bg-neutral-900"
+            });
+        }
     };
 
     return (
@@ -39,11 +45,11 @@ const UserView = () => {
                 <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
                         <div className="flex">
-                            <img className="h-24 w-24 rounded-full ring-4 ring-neutral-600 sm:h-32 sm:w-32" src={user?.image ?? ''} alt="" />
+                            <img className="h-24 w-24 rounded-full ring-4 ring-neutral-600 sm:h-32 sm:w-32" src={userData?.user?.image ?? ''} alt="" />
                         </div>
                         <div className="mt-6 sm:flex-1 sm:min-w-0 sm:flex sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">
                             <div className="sm:hidden md:block mt-6 min-w-0 flex-1">
-                                <h1 className="text-2xl font-bold text-neutral-200 truncate">{user?.name}</h1>
+                                <h1 className="text-2xl font-bold text-neutral-200 truncate">{userData?.user?.name}</h1>
                             </div>
                             <div className="mt-6 flex flex-col justify-stretch space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
                                 <button
@@ -65,13 +71,13 @@ const UserView = () => {
                         </div>
                     </div>
                     <div className="hidden sm:block md:hidden mt-6 min-w-0 flex-1">
-                        <h1 className="text-2xl font-bold text-neutral-200 truncate">{user?.name}</h1>
+                        <h1 className="text-2xl font-bold text-neutral-200 truncate">{userData?.user?.name}</h1>
                     </div>
                 </div>
                 <div className="max-w-5xl mx-auto mt-6">
                     {/* Content */}
-                    {user?.products && (
-                        <ProductList products={user.products} user={{ name: user.name ?? 'User' }} />
+                    {userData?.user?.products && (
+                        <ProductList products={userData?.user.products} user={{ name: userData?.user.name ?? 'User' }} />
                     )}
 
                 </div>

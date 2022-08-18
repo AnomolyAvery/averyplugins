@@ -68,12 +68,34 @@ export const adminUsersRouter = createProtectedRouter()
                 }
             });
 
+
+            const discordId = await ctx.prisma.account.findFirst({
+                where: {
+                    userId: input.id,
+                    provider: "discord"
+                },
+                take: 1,
+                select: {
+                    providerAccountId: true
+                }
+            });
+
+            if (!discordId) {
+                throw new TRPCError({
+                    code: "NOT_FOUND",
+                    message: "User has no discord account"
+                });
+            }
+
             if (!user) {
                 throw new TRPCError({
                     code: "NOT_FOUND"
                 });
             }
 
-            return user;
+            return {
+                user,
+                discordId: discordId.providerAccountId,
+            }
         }
     })

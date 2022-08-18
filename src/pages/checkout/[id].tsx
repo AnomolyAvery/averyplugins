@@ -16,11 +16,7 @@ const Checkout = () => {
 
     const id = router.query.id as string;
 
-    const { data: checkout, status, error, } = trpc.useQuery(['checkout.getCheckout', {
-        id
-    }], {
-        retry: false,
-    });
+
 
     const [orderId, updateOrderId] = useState<string | null>(null);
 
@@ -30,26 +26,12 @@ const Checkout = () => {
 
     const { mutateAsync: cancelOrderAsync } = trpc.useMutation(['checkout.paypal.cancelOrder']);
 
-    const subtotal = '$108.00'
-    const discount = { code: 'CHEAPSKATE', amount: '$16.00' }
-    const total = '$141.92'
-    const products = [
-        {
-            id: 1,
-            name: 'Mountain Mist Artwork Tee',
-            href: '#',
-            price: '$36.00',
-            color: 'Birch',
-            size: 'L',
-            imageSrc: 'https://tailwindui.com/img/ecommerce-images/checkout-form-04-product-01.jpg',
-            imageAlt: 'Off-white t-shirt with circular dot illustration on the front of mountain ridges that fade.',
-        },
-        // More products...
-    ]
 
-
-
-
+    const { data: checkout, status, error, refetch } = trpc.useQuery(['checkout.getCheckout', {
+        id,
+    }], {
+        retry: false
+    });
 
     if (authStatus === "loading" || status === "loading") {
         return <LoadingPreview />;
@@ -107,46 +89,17 @@ const Checkout = () => {
                                     </li>
                                 </ul>
 
-                                <form className="mt-10">
-                                    <label htmlFor="discount-code-mobile" className="block text-sm font-medium text-neutral-300">
-                                        Discount code
-                                    </label>
-                                    <div className="flex space-x-4 mt-1">
-                                        <input
-                                            type="text"
-                                            id="discount-code-mobile"
-                                            name="discount-code-mobile"
-                                            className="bg-neutral-900 block w-full border-neutral-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                        />
-                                        <button
-                                            type="submit"
-                                            className="bg-neutral-600 text-sm font-medium text-neutral-300 rounded-md px-4 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        >
-                                            Apply
-                                        </button>
-                                    </div>
-                                </form>
-
-                                <dl className="text-sm font-medium text-neutral-400 mt-10 space-y-6">
+                                <dl className="text-sm font-medium text-neutral-400 mt-6 space-y-6">
                                     <div className="flex justify-between">
                                         <dt>Subtotal</dt>
-                                        <dd className="text-neutral-100">{subtotal}</dd>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <dt className="flex">
-                                            Discount
-                                            <span className="ml-2 rounded-full bg-gray-200 text-xs text-gray-600 py-0.5 px-2 tracking-wide">
-                                                {discount.code}
-                                            </span>
-                                        </dt>
-                                        <dd className="text-neutral-100">-{discount.amount}</dd>
+                                        <dd className="text-neutral-100">${(checkout?.product.price || 0) / 100}</dd>
                                     </div>
                                 </dl>
                             </Disclosure.Panel>
 
                             <p className="flex items-center justify-between text-sm font-medium text-neutral-100 border-t border-neutral-600 pt-6 mt-6">
                                 <span className="text-base">Total</span>
-                                <span className="text-base">{total}</span>
+                                <span className="text-base">${(checkout?.total || 0) / 100}</span>
                             </p>
                         </>
                     )}
@@ -175,43 +128,14 @@ const Checkout = () => {
                 </ul>
 
                 <div className="sticky bottom-0 flex-none bg-neutral-900 border-t border-neutral-600 p-6">
-                    <form>
-                        <label htmlFor="discount-code" className="block text-sm font-medium text-neutral-300">
-                            Discount code
-                        </label>
-                        <div className="flex space-x-4 mt-1">
-                            <input
-                                type="text"
-                                id="discount-code"
-                                name="discount-code"
-                                className="bg-neutral-900 block w-full border-neutral-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            />
-                            <button
-                                type="submit"
-                                className="bg-neutral-600 text-sm font-medium text-neutral-100 rounded-md px-4 hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                Apply
-                            </button>
-                        </div>
-                    </form>
-
-                    <dl className="text-sm font-medium text-neutral-300 mt-10 space-y-6">
+                    <dl className="text-sm font-medium text-neutral-300 space-y-6">
                         <div className="flex justify-between">
                             <dt>Subtotal</dt>
-                            <dd className="text-neutral-100">{subtotal}</dd>
-                        </div>
-                        <div className="flex justify-between">
-                            <dt className="flex">
-                                Discount
-                                <span className="ml-2 rounded-full bg-gray-200 text-xs text-gray-600 py-0.5 px-2 tracking-wide">
-                                    {discount.code}
-                                </span>
-                            </dt>
-                            <dd className="text-neutral-100">-{discount.amount}</dd>
+                            <dd className="text-neutral-100">${(checkout?.product.price || 0) / 100}</dd>
                         </div>
                         <div className="flex items-center justify-between border-t border-neutral-600 text-neutral-100 pt-6">
                             <dt>Total</dt>
-                            <dd className="text-base">{total}</dd>
+                            <dd className="text-base">${(checkout?.total || 0) / 100}</dd>
                         </div>
                     </dl>
                 </div>
