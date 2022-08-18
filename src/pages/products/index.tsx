@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import { NextSeo } from "next-seo";
 import ProductCard from "../../components/product/ProductCard";
 import LoadingPreview from "../../components/shared/LoadingPreview";
 import { trpc } from "../../utils/trpc";
@@ -17,6 +18,9 @@ const Products: NextPage = () => {
 
     return (
         <>
+            <NextSeo
+                title='Products | Plugins'
+            />
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
                 {products?.pages?.map(page => (
                     <>

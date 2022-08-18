@@ -7,6 +7,8 @@ import { SessionProvider } from "next-auth/react";
 import "../styles/globals.css";
 import AppLayout from "../components/shared/AppLayout";
 import AppToaster from "../components/shared/AppToaster";
+import { DefaultSeo } from 'next-seo';
+import SEO from "../../next-seo.config.cjs";
 
 const MyApp: AppType = ({
   Component,
@@ -15,6 +17,9 @@ const MyApp: AppType = ({
   return (
     <SessionProvider session={session}>
       <AppLayout>
+        <DefaultSeo
+          {...SEO}
+        />
         <Component {...pageProps} />
         <AppToaster />
       </AppLayout>
