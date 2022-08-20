@@ -124,7 +124,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (req.method === "POST") {
             const file = await prisma.productFile.create({
                 data: {
-                    productId,
+                    product: {
+                        connect: {
+                            id: productId,
+                        }
+                    },
                     fileKey,
                     message: "",
                     name: "",
