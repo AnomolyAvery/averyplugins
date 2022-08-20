@@ -95,7 +95,7 @@ export const vendorProducsRouter = createProtectedRouter()
 
             let newPrice = price * 100;
 
-            const descHtml = converter.makeHtml(overview);
+            const descHtml = converter.makeHtml(description);
 
 
             const product = await ctx.prisma.product.create({

@@ -25,11 +25,11 @@ const converter = new Showdown.Converter({
 type Props = {
     id?: string;
     icon?: string;
-    name?: string;
-    price?: number;
-    overview?: string;
-    description?: string;
-    newProduct?: boolean;
+    name: string;
+    price: number;
+    overview: string;
+    description: string;
+    newProduct: boolean;
     status?: ProductStatus;
     onSaveSuccess: () => void;
 }
@@ -289,13 +289,39 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
 }) => {
 
     const publishingOptions = [
+        { title: 'Published', description: 'Product is visible to customers', current: false },
         { title: "Under Review", description: 'Admins will review the product.', current: true },
         { title: "Draft", description: 'Only you can see the product', current: false },
     ];
 
     type PubOption = typeof publishingOptions[number];
 
-    const [selected, updateSelected] = useState<PubOption | null>(publishingOptions[1] ?? null);
+    useEffect(() => {
+        if (publishingOptions.length >= 3) {
+            if (status === "Draft") {
+
+                const draft = publishingOptions[2];
+                draft && updateSelected(draft);
+            }
+            else if (status === "Published") {
+                const pub = publishingOptions[0];
+                pub && updateSelected(pub);
+            }
+            else if (status === "UnderReview") {
+                const review = publishingOptions[1];
+
+                review && updateSelected(review);
+            }
+        }
+
+        return () => {
+            updateSelected(null);
+        };
+    }, [status]);
+
+    const [selected, updateSelected] = useState<PubOption | null>(
+        null
+    );
 
     const { mutateAsync: updateStatusAsync, error } = trpc.useMutation(['vendor.products.updateStatus']);
 
@@ -367,6 +393,7 @@ const StatusSelect: React.FC<StatusSelectProps> = ({
                             <Listbox.Options className="origin-top-right absolute z-10 right-0 mt-2 w-72 rounded-md shadow-lg overflow-hidden bg-neutral-900 divide-y divide-neutral-600 ring-1 ring-black ring-opacity-5 focus:outline-none">
                                 {publishingOptions.map((option) => (
                                     <Listbox.Option
+                                        disabled={option.title === "Published"}
                                         key={option.title}
                                         className={({ active }) =>
                                             classNames(
