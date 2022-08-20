@@ -382,7 +382,7 @@ const FileModal: React.FC<FileModalProps> = ({
                                                                         onChange={(e) => updateFileMessage(e.target.value)}
                                                                     />
                                                                 </div>
-                                                                <p className="mt-2 text-sm text-neutral-400">Write a few sentences about yourself.</p>
+                                                                <p className="mt-2 text-sm text-neutral-400">Write a few sentences about your commit.</p>
                                                             </div>
                                                         </div>
                                                     </div>

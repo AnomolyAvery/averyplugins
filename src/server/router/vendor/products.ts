@@ -205,7 +205,7 @@ export const vendorProducsRouter = createProtectedRouter()
                 id: z.string().min(1),
                 name: z.string().min(3),
                 version: z.string().min(1),
-                message: z.string().min(10),
+                message: z.string().min(1),
             }),
             async resolve({ ctx, input }) {
                 const { id } = input;
