@@ -396,7 +396,7 @@ export const vendorProducsRouter = createProtectedRouter()
 
                     await s3Client.send(deleteObjCmd);
 
-                    const deletedFile = await ctx.prisma.productFile.delete({
+                    const deletedFile = await ctx.prisma.productImage.delete({
                         where: {
                             id,
                         },
